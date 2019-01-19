@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="setting"
     android:title="@string/info_title">
 
-    <PreferenceCategory
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
         android:title="@string/developer">
         <Preference
-            android:title="@string/developer"
-            android:summary="@string/developer_name">
+            android:summary="@string/developer_name"
+            android:title="@string/developer">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://kongjak.com/" />
         </Preference>
         <Preference
-            android:title="@string/github"
-            android:summary="@string/my_github">
+            android:summary="@string/my_github"
+            android:title="@string/github">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://github.com/kongwoojin" />
         </Preference>
     </PreferenceCategory>
 
-    <PreferenceCategory
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="openSource"
         android:title="@string/opensource">
         <Preference
             android:key="allSource"
-            android:title="@string/license"
-            android:summary="@string/license_check"/>
+            android:summary="@string/license_check"
+            android:title="@string/license" />
         <Preference
-            android:title="@string/ggcj_code"
-            android:summary="@string/view_code">
+            android:summary="@string/view_code"
+            android:title="@string/ggcj_code">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://github.com/kongwoojin/ggcj" />
