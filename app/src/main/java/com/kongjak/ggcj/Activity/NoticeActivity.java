@@ -3,8 +3,10 @@ package com.kongjak.ggcj.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -17,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -56,8 +59,8 @@ public class NoticeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         parse_url = getIntent().getStringExtra("url");
-        notice_type = getIntent().getIntExtra("type",0);
-        Log.d("URL",String.format(parse_url, page));
+        notice_type = getIntent().getIntExtra("type", 0);
+        Log.d("URL", String.format(parse_url, page));
 
         prev = (FloatingActionButton) findViewById(R.id.prev);
         prev.setOnClickListener(new View.OnClickListener() {
@@ -271,12 +274,12 @@ public class NoticeActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_notice && !(notice_type ==0)) {
+        } else if (id == R.id.nav_notice && !(notice_type == 0)) {
             Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
             intent.putExtra("url", getString(R.string.notice_url));
             intent.putExtra("type", 0);
             startActivity(intent);
-        } else if (id == R.id.nav_notice_parents && !(notice_type ==1)) {
+        } else if (id == R.id.nav_notice_parents && !(notice_type == 1)) {
             Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
             intent.putExtra("url", getString(R.string.notice_parents_url));
             intent.putExtra("type", 1);
@@ -295,6 +298,30 @@ public class NoticeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.notice, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_web) {
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(this, Uri.parse(String.format(parse_url, page)));
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

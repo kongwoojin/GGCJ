@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_web"
-        android:orderInCategory="100"
-        android:title="View at web"
+        android:title="@string/menu_notice_website"
         android:icon="@drawable/ic_exit"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

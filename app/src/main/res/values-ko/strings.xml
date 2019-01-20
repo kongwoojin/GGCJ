@@ -10,13 +10,15 @@
     <string name="loading">로딩중...</string>
     <string name="ok">확인</string>
 
-    <!-- Navbars-->
+    <!-- NavBars && Menu -->
     <string name="nav_home">홈</string>
     <string name="nav_notice">공지사항</string>
     <string name="nav_notice_parents">가정통신문</string>
     <string name="nav_app">애플리케이션</string>
     <string name="nav_send">보내기</string>
     <string name="nav_info">정보</string>
+    <string name="menu_school_website">학교 홈페이지</string>
+    <string name="menu_notice_website">사이트에서 보기</string>
 
     <!-- Meal & Schedule -->
     <string name="lunch">점심</string>

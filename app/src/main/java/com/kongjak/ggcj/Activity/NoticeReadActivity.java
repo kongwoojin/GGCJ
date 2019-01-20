@@ -1,10 +1,10 @@
 package com.kongjak.ggcj.Activity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -234,7 +234,9 @@ public class NoticeReadActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_web) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(parse_url)));
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(this, Uri.parse(parse_url));
         }
 
         return super.onOptionsItemSelected(item);

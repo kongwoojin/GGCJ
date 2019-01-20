@@ -10,13 +10,15 @@
     <string name="loading">Loading...</string>
     <string name="ok">OK</string>
 
-    <!-- NavBars-->
+    <!-- NavBars && Menu -->
     <string name="nav_home">Home</string>
     <string name="nav_notice">Notice</string>
     <string name="nav_notice_parents">Notice for Parents</string>
     <string name="nav_app">Application</string>
     <string name="nav_send">Send</string>
     <string name="nav_info">Info</string>
+    <string name="menu_school_website">School Website</string>
+    <string name="menu_notice_website">View at Website</string>
 
     <!-- Meal & Schedule -->
     <string name="lunch">Lunch</string>
