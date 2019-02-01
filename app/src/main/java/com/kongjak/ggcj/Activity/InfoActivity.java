@@ -60,6 +60,7 @@ public class InfoActivity extends PreferenceActivity implements NavigationView.O
                 final Notices notices = new Notices();
                 notices.addNotice(new Notice("GGCJ", "https://github.com/kongwoojin/ggcj", "Copyright (c) 2019 WooJin Kong", new MITLicense()));
                 notices.addNotice(new Notice("School API", "https://github.com/agemor/neis-api", "Copyright (c) 2016 HyunJun Kim and other contributers.", new MITLicense()));
+                notices.addNotice(new Notice("jsoup", "https://jsoup.org", "Copyright © 2009 - 2017 Jonathan Hedley (jonathan@hedley.net)", new MITLicense()));
 
                 new LicensesDialog.Builder(InfoActivity.this)
                         .setNotices(notices)
