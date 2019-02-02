@@ -24,9 +24,9 @@ import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
 
-import kr.go.neis.api.School;
-import kr.go.neis.api.SchoolException;
-import kr.go.neis.api.SchoolMenu;
+import org.hyunjun.school.School;
+import org.hyunjun.school.SchoolException;
+import org.hyunjun.school.SchoolMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

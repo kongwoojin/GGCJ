@@ -20,10 +20,10 @@ import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
 
-import kr.go.neis.api.School;
-import kr.go.neis.api.SchoolException;
-import kr.go.neis.api.SchoolMenu;
-import kr.go.neis.api.SchoolSchedule;
+import org.hyunjun.school.School;
+import org.hyunjun.school.SchoolException;
+import org.hyunjun.school.SchoolMenu;
+import org.hyunjun.school.SchoolSchedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
