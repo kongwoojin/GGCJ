@@ -6,7 +6,6 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:checked="true"
             android:icon="@drawable/ic_menu_home"
             android:title="@string/nav_home" />
         <item
@@ -17,6 +16,11 @@
             android:id="@+id/nav_notice_parents"
             android:icon="@drawable/ic_menu_notice"
             android:title="@string/nav_notice_parents" />
+
+        <item
+            android:id="@+id/nav_date"
+            android:icon="@drawable/ic_menu_calender"
+            android:title="@string/nav_date" />
     </group>
 
     <item android:title="@string/nav_app">

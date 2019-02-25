@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_web"
-        android:title="@string/menu_notice_website"
         android:icon="@drawable/ic_exit"
+        android:title="@string/menu_notice_website"
         app:showAsAction="always" />
 </menu>

@@ -14,6 +14,7 @@
     <string name="nav_home">홈</string>
     <string name="nav_notice">공지사항</string>
     <string name="nav_notice_parents">가정통신문</string>
+    <string name="nav_date">달력</string>
     <string name="nav_app">애플리케이션</string>
     <string name="nav_send">보내기</string>
     <string name="nav_info">정보</string>
@@ -24,10 +25,12 @@
     <string name="lunch">점심</string>
     <string name="dinner">저녁</string>
     <string name="schedule">학사일정</string>
-    <string name="no_lunch">점심 데이터가 없습니다</string>
-    <string name="no_dinner">저녁 데이터가 없습니다</string>
+    <string name="no_lunch_data">점심 데이터가 없습니다</string>
+    <string name="no_dinner_data">저녁 데이터가 없습니다</string>
     <string name="no_schedule_data">학사일정 데이터가 없습니다</string>
-    <string name="no_schedule">오늘은 학사일정이 없습니다</string>
+    <string name="no_lunch">점심이 없습니다</string>
+    <string name="no_dinner">저녁이 없습니다</string>
+    <string name="no_schedule">학사일정이 없습니다</string>
 
     <!-- Notice -->
     <string name="first_page">첫 페이지입니다!</string>

@@ -15,22 +15,6 @@ import java.util.ArrayList;
 
 public class NoticeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        CardView mCardView;
-        TextView title;
-        TextView writer;
-        TextView date;
-
-        MyViewHolder(View view) {
-            super(view);
-            title = view.findViewById(R.id.item_title);
-            writer = view.findViewById(R.id.item_writer);
-            date = view.findViewById(R.id.item_date);
-            mCardView = (CardView) view.findViewById(R.id.card_view);
-
-        }
-    }
-
     private ArrayList<Notices> NoticeArrayList;
 
     public NoticeAdapter(ArrayList<Notices> NoticeArrayList) {
@@ -70,5 +54,21 @@ public class NoticeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemCount() {
         return NoticeArrayList.size();
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        CardView mCardView;
+        TextView title;
+        TextView writer;
+        TextView date;
+
+        MyViewHolder(View view) {
+            super(view);
+            title = view.findViewById(R.id.item_title);
+            writer = view.findViewById(R.id.item_writer);
+            date = view.findViewById(R.id.item_date);
+            mCardView = (CardView) view.findViewById(R.id.card_view);
+
+        }
     }
 }

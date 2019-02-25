@@ -17,18 +17,6 @@ import java.util.ArrayList;
 public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        CardView mCardView;
-        TextView title;
-
-        MyViewHolder(View view) {
-            super(view);
-            title = view.findViewById(R.id.item_dl);
-            mCardView = (CardView) view.findViewById(R.id.dl_card);
-        }
-    }
-
     private ArrayList<Files> FileArrayList;
 
     public FileAdapter(ArrayList<Files> FileArrayList) {
@@ -63,5 +51,16 @@ public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         return FileArrayList.size();
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        CardView mCardView;
+        TextView title;
+
+        MyViewHolder(View view) {
+            super(view);
+            title = view.findViewById(R.id.item_dl);
+            mCardView = (CardView) view.findViewById(R.id.dl_card);
+        }
     }
 }

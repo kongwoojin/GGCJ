@@ -157,7 +157,101 @@ public class NoticeActivity extends AppCompatActivity
         reload();
     }
 
+    public void checkFabHide() {
+        if (page == 1) {
+            prev.hide();
+        } else {
+            prev.show();
+        }
+        if (page == last_page) {
+            next.hide();
+        } else {
+            next.show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_notice && !(notice_type == 0)) {
+            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
+            intent.putExtra("url", getString(R.string.notice_url));
+            intent.putExtra("type", 0);
+            startActivity(intent);
+        } else if (id == R.id.nav_notice_parents && !(notice_type == 1)) {
+            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
+            intent.putExtra("url", getString(R.string.notice_parents_url));
+            intent.putExtra("type", 1);
+            startActivity(intent);
+        } else if (id == R.id.nav_date) {
+            Intent intent = new Intent(getBaseContext(), DateActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_send) {
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.setType("plain/text");
+            String[] address = {"ggcj@kongjak.com"};
+            email.putExtra(Intent.EXTRA_EMAIL, address);
+            startActivity(email);
+        } else if (id == R.id.nav_info) {
+            Intent intent = new Intent(getBaseContext(), InfoActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.notice, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_web) {
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(this, Uri.parse(String.format(parse_url, page)));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setNav();
+    }
+
     private class MainPageTask extends AsyncTask<String, String, Void> {
+        ArrayList<Notices> parsed = new ArrayList<>();
+        ProgressDialog asyncDialog = new ProgressDialog(
+                NoticeActivity.this);
         private Elements root;
         private Elements title;
         private Elements list;
@@ -166,8 +260,6 @@ public class NoticeActivity extends AppCompatActivity
         private Elements url;
         private Elements numoflist;
         private int count;
-
-        ArrayList<Notices> parsed = new ArrayList<>();
 
         @Override
         protected void onPostExecute(Void result) {
@@ -181,9 +273,6 @@ public class NoticeActivity extends AppCompatActivity
             checkFabHide();
             super.onPostExecute(result);
         }
-
-        ProgressDialog asyncDialog = new ProgressDialog(
-                NoticeActivity.this);
 
         @Override
         protected void onPreExecute() {
@@ -240,93 +329,5 @@ public class NoticeActivity extends AppCompatActivity
                 Log.d("Parse", String.valueOf(last_page));
             }
         }
-    }
-
-    public void checkFabHide() {
-        if (page == 1) {
-            prev.hide();
-        } else {
-            prev.show();
-        }
-        if (page == last_page) {
-            next.hide();
-        } else {
-            next.show();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_notice && !(notice_type == 0)) {
-            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
-            intent.putExtra("url", getString(R.string.notice_url));
-            intent.putExtra("type", 0);
-            startActivity(intent);
-        } else if (id == R.id.nav_notice_parents && !(notice_type == 1)) {
-            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
-            intent.putExtra("url", getString(R.string.notice_parents_url));
-            intent.putExtra("type", 1);
-            startActivity(intent);
-        } else if (id == R.id.nav_send) {
-            Intent email = new Intent(Intent.ACTION_SEND);
-            email.setType("plain/text");
-            String[] address = {"ggcj@kongjak.com"};
-            email.putExtra(Intent.EXTRA_EMAIL, address);
-            startActivity(email);
-        } else if (id == R.id.nav_info) {
-            Intent intent = new Intent(getBaseContext(), InfoActivity.class);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.notice, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_web) {
-            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-            CustomTabsIntent customTabsIntent = builder.build();
-            customTabsIntent.launchUrl(this, Uri.parse(String.format(parse_url, page)));
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setNav();
     }
 }

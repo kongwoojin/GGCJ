@@ -14,6 +14,7 @@
     <string name="nav_home">Home</string>
     <string name="nav_notice">Notice</string>
     <string name="nav_notice_parents">Notice for Parents</string>
+    <string name="nav_date">Calendar</string>
     <string name="nav_app">Application</string>
     <string name="nav_send">Send</string>
     <string name="nav_info">Info</string>
@@ -24,10 +25,12 @@
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
     <string name="schedule">Schedule</string>
-    <string name="no_lunch">No Lunch Data</string>
-    <string name="no_dinner">No Dinner Data</string>
+    <string name="no_lunch_data">No Lunch Data</string>
+    <string name="no_dinner_data">No Dinner Data</string>
     <string name="no_schedule_data">No Schedule Data</string>
-    <string name="no_schedule">No Schedule Today</string>
+    <string name="no_lunch">No Lunch</string>
+    <string name="no_dinner">No Dinner</string>
+    <string name="no_schedule">No Schedule</string>
 
     <!-- School Code -->
     <string name="school_code" translatable="false">J100005831</string>
