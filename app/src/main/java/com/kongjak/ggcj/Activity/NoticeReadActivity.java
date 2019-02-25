@@ -33,7 +33,6 @@ public class NoticeReadActivity extends AppCompatActivity {
     String dateTxt;
     String contentsTxt;
     String parse_url;
-    String dl_url;
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;

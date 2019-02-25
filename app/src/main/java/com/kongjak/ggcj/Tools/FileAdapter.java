@@ -1,6 +1,5 @@
 package com.kongjak.ggcj.Tools;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 
 public class FileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    Context context;
     private ArrayList<Files> FileArrayList;
 
     public FileAdapter(ArrayList<Files> FileArrayList) {

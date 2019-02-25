@@ -26,9 +26,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String getDate;
     private Integer getYear, getMonth, getDay;
-    private Thread th;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
