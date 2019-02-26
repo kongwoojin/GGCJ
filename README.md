@@ -1,16 +1,16 @@
 # GGCJ
 
-##### [경기창조고등학교](http://ggcj.hs.kr)를 위한  비공식 안드로이드 애플리케이션
+[경기창조고등학교](http://ggcj.hs.kr)를 위한  비공식 안드로이드 애플리케이션
 
 ## 사용된 오픈소스
 
-[NIES API](https://github.com/agemor/neis-api)
+- [NIES API](https://github.com/agemor/neis-api)
 
-[jsoup](https://jsoup.org)
+- [jsoup](https://jsoup.org)
 
-[Material Calendar View](https://github.com/prolificinteractive/material-calendarview)
+- [Material Calendar View](https://github.com/prolificinteractive/material-calendarview)
 
-[LicensesDialog](https://github.com/PSDev/LicensesDialog)
+- [LicensesDialog](https://github.com/PSDev/LicensesDialog)
 
 ## 라이선스
 
