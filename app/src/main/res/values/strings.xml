@@ -17,6 +17,7 @@
     <string name="nav_date">Calendar</string>
     <string name="nav_app">Application</string>
     <string name="nav_send">Send</string>
+    <string name="nav_send_intent">Choose email app</string>
     <string name="nav_info">Info</string>
     <string name="menu_school_website">School Website</string>
     <string name="menu_notice_website">View at Website</string>

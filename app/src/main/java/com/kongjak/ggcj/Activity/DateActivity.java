@@ -1,6 +1,7 @@
 package com.kongjak.ggcj.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -98,11 +99,15 @@ public class DateActivity extends AppCompatActivity
             intent.putExtra("type", 1);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-            Intent email = new Intent(Intent.ACTION_SEND);
-            email.setType("plain/text");
+            Intent email = new Intent(Intent.ACTION_SENDTO);
+            email.setData(Uri.parse("mailto:"));
             String[] address = {"ggcj@kongjak.com"};
             email.putExtra(Intent.EXTRA_EMAIL, address);
-            startActivity(email);
+            String title = getResources().getString(R.string.nav_send_intent);
+            Intent chooser = Intent.createChooser(email, title);
+            if (email.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }
         } else if (id == R.id.nav_info) {
             Intent intent = new Intent(getBaseContext(), InfoActivity.class);
             startActivity(intent);

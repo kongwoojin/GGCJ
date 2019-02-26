@@ -17,6 +17,7 @@
     <string name="nav_date">달력</string>
     <string name="nav_app">애플리케이션</string>
     <string name="nav_send">보내기</string>
+    <string name="nav_send_intent">이메일 앱 선택</string>
     <string name="nav_info">정보</string>
     <string name="menu_school_website">학교 홈페이지</string>
     <string name="menu_notice_website">사이트에서 보기</string>

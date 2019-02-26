@@ -230,11 +230,15 @@ public class NoticeActivity extends AppCompatActivity
             Intent intent = new Intent(getBaseContext(), DateActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-            Intent email = new Intent(Intent.ACTION_SEND);
-            email.setType("plain/text");
+            Intent email = new Intent(Intent.ACTION_SENDTO);
+            email.setData(Uri.parse("mailto:"));
             String[] address = {"ggcj@kongjak.com"};
             email.putExtra(Intent.EXTRA_EMAIL, address);
-            startActivity(email);
+            String title = getResources().getString(R.string.nav_send_intent);
+            Intent chooser = Intent.createChooser(email, title);
+            if (email.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }
         } else if (id == R.id.nav_info) {
             Intent intent = new Intent(getBaseContext(), InfoActivity.class);
             startActivity(intent);
