@@ -76,6 +76,20 @@ public class NoticeActivity extends AppCompatActivity
             }
         });
 
+        prev.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (page != 1) {
+                    page = 1;
+                    MainPageTask asyncTask = new MainPageTask();
+                    asyncTask.execute();
+                } else {
+                    Snackbar.make(view, getString(R.string.first_page), Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
         next = (FloatingActionButton) findViewById(R.id.next);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +104,19 @@ public class NoticeActivity extends AppCompatActivity
             }
         });
 
+        next.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (page != last_page) {
+                    page = last_page;
+                    MainPageTask asyncTask = new MainPageTask();
+                    asyncTask.execute();
+                } else {
+                    Snackbar.make(view, getString(R.string.last_page), Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -301,7 +328,7 @@ public class NoticeActivity extends AppCompatActivity
 
                 for (int i = 1; i <= count; i++) { // loop
                     title = root.select("tr:nth-child(" + i + ") > td.tit"); // Get title
-                    numoflist = root.select("tr:nth-child(" + i + ") > td:nth-child(1)"); // Get writer
+                    numoflist = root.select("tr:nth-child(" + i + ") > td:nth-child(1)"); // Get number of notice
                     writer = root.select("tr:nth-child(" + i + ") > td:nth-child(4)"); // Get writer
                     date = root.select("tr:nth-child(" + i + ") > td:nth-child(5)"); // Get date
                     url = root.select("tr:nth-child(" + i + ") > td.tit > a"); // Get url (Elements)
@@ -322,11 +349,13 @@ public class NoticeActivity extends AppCompatActivity
 
         @Override
         protected void onProgressUpdate(String... params) { // Receive from doInBackground
+            double last_notice_num;
             parsed.add(new Notices(params[0], params[1], params[2], params[3])); // Add values to array list
             Log.d("Parse", params[3]);
-            if (params[4].equals("1")) {
-                last_page = page;
-                Log.d("Parse", String.valueOf(last_page));
+            if (page == 1 && !params[4].equals("공지")) {
+                last_notice_num = Integer.parseInt(params[4]);
+                last_page = (int) Math.ceil((last_notice_num + 14)/15); // Get last page number
+                Log.d("GGCJ", String.valueOf(last_page));
             }
         }
     }
