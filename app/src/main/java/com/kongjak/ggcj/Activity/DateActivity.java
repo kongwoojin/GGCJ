@@ -12,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.kongjak.ggcj.R;
+import com.kongjak.ggcj.Tools.SaturdayDecorator;
+import com.kongjak.ggcj.Tools.SundayDecorator;
+import com.kongjak.ggcj.Tools.TodayDecorator;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
@@ -46,6 +49,11 @@ public class DateActivity extends AppCompatActivity
 
         widget = (MaterialCalendarView) findViewById(R.id.calendarView);
         widget.setOnDateChangedListener(this);
+
+        widget.addDecorators(
+                new SundayDecorator(),
+                new SaturdayDecorator(),
+                new TodayDecorator());
     }
 
     @Override
