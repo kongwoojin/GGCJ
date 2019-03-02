@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -98,6 +99,11 @@ public class DateActivity extends AppCompatActivity
             intent.putExtra("url", getString(R.string.notice_parents_url));
             intent.putExtra("type", 1);
             startActivity(intent);
+        } else if (id == R.id.nav_timetable) {
+            String url = "http://comci.kr/st";
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(DateActivity.this, Uri.parse(url));
         } else if (id == R.id.nav_send) {
             Intent email = new Intent(Intent.ACTION_SENDTO);
             email.setData(Uri.parse("mailto:"));

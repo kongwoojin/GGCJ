@@ -126,6 +126,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_date) {
             Intent intent = new Intent(getBaseContext(), DateActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_timetable) {
+            String url = "http://comci.kr/st";
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
         } else if (id == R.id.nav_send) {
             Intent email = new Intent(Intent.ACTION_SENDTO);
             email.setData(Uri.parse("mailto:"));
