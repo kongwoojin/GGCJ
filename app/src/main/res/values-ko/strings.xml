@@ -9,6 +9,7 @@
     <string name="action_settings">Settings</string>
     <string name="loading">로딩중...</string>
     <string name="ok">확인</string>
+    <string name="date">%1$d/%2$d/%3$d</string>
 
     <!-- NavBars && Menu -->
     <string name="nav_home">홈</string>

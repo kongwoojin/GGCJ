@@ -57,6 +57,11 @@ public class DateReadActivity extends AppCompatActivity
         SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
         String schedule_str = schedule_sp.getString(curDate, "");
 
+        String today = String.format(getResources().getString(R.string.date),year,month,dayOfMonth);
+
+        TextView date_v = (TextView) findViewById(R.id.item_date);
+        date_v.setText(today);
+
         TextView lunch_v = (TextView) findViewById(R.id.item_lunch);
         lunch_v.setVisibility(View.VISIBLE);
 
