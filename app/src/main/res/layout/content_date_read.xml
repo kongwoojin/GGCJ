@@ -80,6 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
+                    android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle"
                     android:visibility="gone" />
 
@@ -125,6 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
+                    android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle"
                     android:visibility="gone" />
 
@@ -170,6 +172,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
+                    android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle"
                     android:visibility="gone" />
 
