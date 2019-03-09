@@ -34,6 +34,8 @@
     <string name="no_lunch">점심이 없습니다</string>
     <string name="no_dinner">저녁이 없습니다</string>
     <string name="no_schedule">학사일정이 없습니다</string>
+    <string name="next_schedule">오늘은 학사일정이 없습니다\n다음 학사일정은 %1$s(%2$s)입니다</string>
+    <string name="no_next_schedule">이번달에는 학사일정이 더 없습니다</string>
 
     <!-- Notice -->
     <string name="first_page">첫 페이지입니다!</string>

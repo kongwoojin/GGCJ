@@ -34,6 +34,8 @@
     <string name="no_lunch">No Lunch</string>
     <string name="no_dinner">No Dinner</string>
     <string name="no_schedule">No Schedule</string>
+    <string name="next_schedule">No schedule today\nNext schedule is %1$s(%2$s)</string>
+    <string name="no_next_schedule">No more schedule this month</string>
 
     <!-- School Code -->
     <string name="school_code" translatable="false">J100005831</string>

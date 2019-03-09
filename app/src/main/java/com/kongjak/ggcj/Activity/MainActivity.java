@@ -1,8 +1,10 @@
 package com.kongjak.ggcj.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
@@ -21,12 +23,15 @@ import android.widget.TextView;
 import com.kongjak.ggcj.R;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Integer getYear, getMonth, getDay;
+    private String next_schedule_day = "", next_schedule = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +98,11 @@ public class MainActivity extends AppCompatActivity
             lunch_v.setText(getString(R.string.no_lunch_data));
             dinner_v.setText(getString(R.string.no_dinner_data));
             schedule_v.setText(getString(R.string.no_schedule_data));
+        }
+
+        if (schedule_str.equals(getString(R.string.no_schedule))) {
+            NextSchedule asyncTask = new NextSchedule();
+            asyncTask.execute();
         }
     }
 
@@ -182,5 +192,65 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class NextSchedule extends AsyncTask<String, String, Void> {
+        ProgressDialog asyncDialog = new ProgressDialog(
+                MainActivity.this);
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //doInBackground 작업이 끝나고 난뒤의 작업
+            TextView schedule_v = (TextView) findViewById(R.id.item_schedule);
+            if (next_schedule.isEmpty()) {
+                schedule_v.setText(getString(R.string.no_next_schedule));
+            } else {
+                schedule_v.setText(String.format(getString(R.string.next_schedule), next_schedule, next_schedule_day));
+            }
+            asyncDialog.dismiss();
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            String loading = getString(R.string.loading);
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage(loading);
+
+            // show dialog
+            asyncDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            //백그라운드 작업이 진행되는 곳.
+            int today = Calendar.getInstance(TimeZone.getDefault()).get(Calendar.DAY_OF_MONTH);
+            int last_day = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+            try {
+                for (int i = today + 1; i <= last_day; i++) {
+                    String getFullDate = getYear + "-" + getMonth + "-" + i;
+                    String getDate = getMonth + "/" + i;
+
+                    SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
+                    String schedule_str = schedule_sp.getString(getFullDate, "");
+
+                    if (!schedule_str.equals(getString(R.string.no_schedule))) {
+                        publishProgress(getDate, schedule_str); // Send it!
+                        break;
+                    }
+
+                }
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... params) { // Receive from doInBackground
+            next_schedule_day = params[0];
+            next_schedule = params[1];
+        }
     }
 }
