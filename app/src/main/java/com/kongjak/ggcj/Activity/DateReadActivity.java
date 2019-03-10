@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
 
-import org.hyunjun.school.School;
-import org.hyunjun.school.SchoolException;
-import org.hyunjun.school.SchoolMenu;
-import org.hyunjun.school.SchoolSchedule;
+import kr.go.neis.api.School;
+import kr.go.neis.api.SchoolException;
+import kr.go.neis.api.SchoolMenu;
+import kr.go.neis.api.SchoolSchedule;
 
 import java.util.List;
 
@@ -112,14 +112,14 @@ public class DateReadActivity extends AppCompatActivity
 
                         String Date = year + "-" + month + "-" + (i + 1);
 
-                        if (menu.get(i).lunch.equals("급식이 없습니다")) {
+                        if (menu.get(i).lunch.isEmpty()) {
                             lunch = getString(R.string.no_lunch);
                         } else {
                             lunch = menu.get(i).lunch;
                             lunch = lunch.replace("&amp;", "&"); // Replace &amp; to &
                         }
 
-                        if (menu.get(i).dinner.equals("급식이 없습니다")) {
+                        if (menu.get(i).dinner.isEmpty()) {
                             dinner = getString(R.string.no_dinner);
                         } else {
                             dinner = menu.get(i).dinner;
@@ -166,7 +166,7 @@ public class DateReadActivity extends AppCompatActivity
                         if (scheduleList.get(i).schedule.isEmpty()) {
                             schedule = getString(R.string.no_schedule);
                         } else {
-                            schedule = scheduleList.get(i).schedule;
+                            schedule = scheduleList.get(i).schedule.trim();
                         }
 
                         SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
