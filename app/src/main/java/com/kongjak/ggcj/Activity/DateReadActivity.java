@@ -220,19 +220,23 @@ public class DateReadActivity extends AppCompatActivity
                 for (Element schedulesList : scheduleAll) {
                     Elements schedules = schedulesList.select("td > div");
                     for (Element schedule : schedules) {
+                        StringBuilder schedule_txt = new StringBuilder();
                         Elements scheduleDate = schedule.select("em");
                         if (scheduleDate.text().isEmpty())
                             continue;
-                        Elements scheduleTxt = schedule.select("a > strong");
-                        Log.d("GGCJ_D", scheduleTxt.text());
+                        Elements scheduleA = schedule.select("a");
+                        for (Element scA : scheduleA) {
+                            Elements scheduleTxt = scA.select("strong");
+                            schedule_txt.append(scheduleTxt.text()).append("\n");
+                        }
                         day = day + 1;
                         String Date = year + "-" + month + "-" + CheckDigit.check(String.valueOf(day));
                         SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
                         SharedPreferences.Editor schedule_editor = schedule_sp.edit();
-                        if (scheduleTxt.isEmpty())
+                        if (schedule_txt.toString().isEmpty())
                             schedule_editor.putString(Date, getString(R.string.no_schedule));
                         else
-                            schedule_editor.putString(Date, scheduleTxt.text());
+                            schedule_editor.putString(Date, schedule_txt.toString().trim());
                         schedule_editor.apply();
                     }
                 }
