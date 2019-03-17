@@ -4,8 +4,6 @@
 
 ## 사용된 오픈소스
 
-- [NIES API](https://github.com/agemor/neis-api)
-
 - [jsoup](https://jsoup.org)
 
 - [Material Calendar View](https://github.com/prolificinteractive/material-calendarview)
