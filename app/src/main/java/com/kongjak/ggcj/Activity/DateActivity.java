@@ -64,9 +64,9 @@ public class DateActivity extends AppCompatActivity
             @NonNull CalendarDay date,
             boolean selected) {
         Intent intent = new Intent(getBaseContext(), DateReadActivity.class);
-        intent.putExtra("dayOfMonth", Integer.parseInt(selected ? DAY_FORMATTER.format(date.getDate()) : "0"));
-        intent.putExtra("month", Integer.parseInt(selected ? MONTH_FORMATTER.format(date.getDate()) : "0"));
-        intent.putExtra("year", Integer.parseInt(selected ? YEAR_FORMATTER.format(date.getDate()) : "0"));
+        intent.putExtra("dayOfMonth", selected ? DAY_FORMATTER.format(date.getDate()) : "0");
+        intent.putExtra("month", selected ? MONTH_FORMATTER.format(date.getDate()) : "0");
+        intent.putExtra("year", selected ? YEAR_FORMATTER.format(date.getDate()) : "0");
         startActivity(intent);
     }
 

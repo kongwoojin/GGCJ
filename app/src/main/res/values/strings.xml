@@ -9,7 +9,7 @@
     <string name="action_settings">Settings</string>
     <string name="loading">Loading...</string>
     <string name="ok">OK</string>
-    <string name="date">%2$d/%3$d/%1$d</string>
+    <string name="date">%2$s/%3$s/%1$s</string>
 
     <!-- NavBars && Menu -->
     <string name="nav_home">Home</string>
@@ -37,16 +37,19 @@
     <string name="next_schedule">No schedule today\nNext schedule is %1$s(%2$s)</string>
     <string name="no_next_schedule">No more schedule this month</string>
 
-    <!-- School Code -->
+    <!-- School Info -->
     <string name="school_code" translatable="false">J100005831</string>
+    <string name="school_type" translatable="false">4</string>
 
     <!-- Notice -->
     <string name="first_page">First Page!</string>
     <string name="last_page">Last Page!</string>
 
-    <!-- School Notice URL -->
+    <!-- URLs -->
     <string name="notice_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050100&amp;master=bbs&amp;act=list&amp;master_sid=30&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="notice_parents_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=030100&amp;master=bbs&amp;act=list&amp;master_sid=18&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
+    <string name="neis_meal" translatable="false">https://%1$s.goe.go.kr/sts_sci_md01_001.do?schulCode=%2$s&amp;schulCrseScCode=%3$s&amp;schulKndScCode=0%3$s&amp;schMmealScCode=%4$s&amp;schYmd=%5$s.%6$s.%7$s</string>
+    <string name="neis_schedule" translatable="false">https://%1$s.goe.go.kr/sts_sci_sf01_001.do?schulCode=%2$s&amp;schulCrseScCode=%3$s&amp;schulKndScCode=0%3$s&amp;ay=%4$s&amp;mm=%5$s</string>
 
     <!-- Info -->
     <string name="info_title">Info</string>

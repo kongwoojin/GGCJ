@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
+import com.kongjak.ggcj.Tools.CheckDigit;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,7 +31,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Integer getYear, getMonth, getDay;
+    private String getYear, getMonth, getDay;
     private String next_schedule_day = "", next_schedule = "";
 
     @Override
@@ -55,13 +56,13 @@ public class MainActivity extends AppCompatActivity
         Date date = new Date(now);
 
         SimpleDateFormat year = new SimpleDateFormat("yyyy");
-        getYear = Integer.valueOf(year.format(date));
+        getYear = year.format(date);
 
         SimpleDateFormat month = new SimpleDateFormat("MM");
-        getMonth = Integer.valueOf(month.format(date));
+        getMonth = CheckDigit.check(month.format(date));
 
         SimpleDateFormat day = new SimpleDateFormat("dd");
-        getDay = Integer.valueOf(day.format(date));
+        getDay = CheckDigit.check(day.format(date));
 
         setView();
     }

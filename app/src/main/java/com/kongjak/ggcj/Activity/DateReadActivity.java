@@ -1,6 +1,8 @@
 package com.kongjak.ggcj.Activity;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -10,21 +12,20 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
+import com.kongjak.ggcj.Tools.CheckDigit;
 
-import kr.go.neis.api.School;
-import kr.go.neis.api.SchoolException;
-import kr.go.neis.api.SchoolMenu;
-import kr.go.neis.api.SchoolSchedule;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.util.List;
+import java.io.IOException;
 
 public class DateReadActivity extends AppCompatActivity
         implements SwipeRefreshLayout.OnRefreshListener {
 
     SwipeRefreshLayout mSwipeRefreshLayout;
-    private Integer dayOfMonth, month, year;
-    private Thread th;
-    private String curDate;
+    private String curDate, dayOfMonth, month, year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +37,11 @@ public class DateReadActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        dayOfMonth = getIntent().getIntExtra("dayOfMonth", 0);
-        month = getIntent().getIntExtra("month", 0);
-        year = getIntent().getIntExtra("year", 0);
+        dayOfMonth = CheckDigit.check(getIntent().getStringExtra("dayOfMonth"));
+        month = CheckDigit.check(getIntent().getStringExtra("month"));
+        year = getIntent().getStringExtra("year");
         curDate = year + "-" + month + "-" + dayOfMonth;
+        System.out.println(curDate);
 
         setView();
 
@@ -57,7 +59,7 @@ public class DateReadActivity extends AppCompatActivity
         SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
         String schedule_str = schedule_sp.getString(curDate, "");
 
-        String today = String.format(getResources().getString(R.string.date),year,month,dayOfMonth);
+        String today = String.format(getResources().getString(R.string.date), year, month, dayOfMonth);
 
         TextView date_v = (TextView) findViewById(R.id.item_date);
         date_v.setText(today);
@@ -76,110 +78,26 @@ public class DateReadActivity extends AppCompatActivity
             dinner_v.setText(dinner_str);
         } else {
             getMeal();
-            try {
-                th.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            setView();
         }
 
         if (!schedule_str.isEmpty()) {
             schedule_v.setText(schedule_str);
         } else {
             getSchedule();
-            try {
-                th.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            setView();
         }
     }
 
     public void getMeal() {
-        th = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String school_code = getString(R.string.school_code);
-                School api = new School(School.Type.HIGH, School.Region.GYEONGGI, school_code);
+        WeekMealTask lunchTask = new WeekMealTask();
+        lunchTask.execute("2");
 
-                String lunch, dinner;
-                try {
-                    List<SchoolMenu> menu = api.getMonthlyMenu(year, month);
-
-                    for (int i = 0; i < menu.size(); i++) { // loop
-
-                        String Date = year + "-" + month + "-" + (i + 1);
-
-                        if (menu.get(i).lunch.isEmpty()) {
-                            lunch = getString(R.string.no_lunch);
-                        } else {
-                            lunch = menu.get(i).lunch;
-                            lunch = lunch.replace("&amp;", "&"); // Replace &amp; to &
-                        }
-
-                        if (menu.get(i).dinner.isEmpty()) {
-                            dinner = getString(R.string.no_dinner);
-                        } else {
-                            dinner = menu.get(i).dinner;
-                            dinner = dinner.replace("&amp;", "&"); // Replace &amp; to &
-                        }
-
-                        SharedPreferences lunch_sp = getSharedPreferences("lunch", MODE_PRIVATE);
-                        SharedPreferences.Editor lunch_editor = lunch_sp.edit();
-                        lunch_editor.putString(Date, lunch);
-                        lunch_editor.apply();
-
-                        SharedPreferences dinner_sp = getSharedPreferences("dinner", MODE_PRIVATE);
-                        SharedPreferences.Editor dinner_editor = dinner_sp.edit();
-                        dinner_editor.putString(Date, dinner);
-                        dinner_editor.apply();
-                    }
-                } catch (SchoolException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        th.start();
+        WeekMealTask dinnerTask = new WeekMealTask();
+        dinnerTask.execute("3");
     }
 
     public void getSchedule() {
-        th = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String school_code = getString(R.string.school_code);
-                School api = new School(School.Type.HIGH, School.Region.GYEONGGI, school_code);
-
-                String schedule;
-                try {
-                    List<SchoolSchedule> scheduleList = api.getMonthlySchedule(year, month);
-
-                    for (int i = 0; i < scheduleList.size(); i++) {
-                        System.out.println((i + 1) + "일 학사일정");
-                        System.out.println(scheduleList.get(i));
-
-                        String Date = year + "-" + month + "-" + (i + 1);
-
-                        Log.d("Parse", Date);
-
-                        if (scheduleList.get(i).schedule.isEmpty()) {
-                            schedule = getString(R.string.no_schedule);
-                        } else {
-                            schedule = scheduleList.get(i).schedule.trim();
-                        }
-
-                        SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
-                        SharedPreferences.Editor schedule_editor = schedule_sp.edit();
-                        schedule_editor.putString(Date, schedule);
-                        schedule_editor.apply();
-                    }
-                } catch (SchoolException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        th.start();
+        ScheduleTask asyncTask = new ScheduleTask();
+        asyncTask.execute();
     }
 
     @Override
@@ -193,5 +111,136 @@ public class DateReadActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+
+    public class WeekMealTask extends AsyncTask<String, String, Void> {
+        ProgressDialog asyncDialog = new ProgressDialog(
+                DateReadActivity.this);
+
+        @Override
+        protected void onPostExecute(Void result) {
+            setView();
+            asyncDialog.dismiss();
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            String loading = getString(R.string.loading);
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage(loading);
+
+            // show dialog
+            asyncDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            //백그라운드 작업이 진행되는 곳.
+            String school_code = getString(R.string.school_code);
+            String school_type = getString(R.string.school_type);
+            String meal_type = null;
+            String no_meal = null;
+
+            if (params[0].equals("2")) {
+                meal_type = "lunch";
+                no_meal = getString(R.string.no_lunch);
+            } else if (params[0].equals("3")) {
+                meal_type = "dinner";
+                no_meal = getString(R.string.no_dinner);
+            }
+
+            Document doc;
+            String meal_url = String.format(getString(R.string.neis_meal), "stu", school_code, school_type, params[0], year, month, dayOfMonth);
+            try {
+                doc = Jsoup.connect(meal_url).get();
+                Elements list = doc.select("#contents > div:nth-child(2) > table > thead > tr > th");
+                int num = list.size();
+                System.out.println(num);
+                for (int i = 2; i <= num; i++) {
+                    Elements meal = doc.select("#contents > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(" + i + ")");
+                    Elements date = doc.select("#contents > div:nth-child(2) > table > thead > tr > th:nth-child(" + i + ")");
+                    String Date = date.text().replaceAll("\\(.\\)", "").replace(".", "-");
+                    String meals = meal.html().replace("<br>", "\n");
+                    if (meals.isEmpty()) {
+                        meals = no_meal;
+                    } else {
+                        meals = meals.replace("&amp;", "&").trim(); // Replace &amp; to &
+                    }
+                    System.out.println(Date);
+                    SharedPreferences sp = getSharedPreferences(meal_type, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString(Date, meals);
+                    editor.apply();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private class ScheduleTask extends AsyncTask<String, String, Void> {
+        ProgressDialog asyncDialog = new ProgressDialog(
+                DateReadActivity.this);
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //doInBackground 작업이 끝나고 난뒤의 작업
+            Log.d("Parse", "End");
+            setView();
+            asyncDialog.dismiss();
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            String loading = getString(R.string.loading);
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage(loading);
+
+            // show dialog
+            asyncDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            //백그라운드 작업이 진행되는 곳.
+            String school_code = getString(R.string.school_code);
+            String school_type = getString(R.string.school_type);
+            int day = 0;
+            Document doc;
+            String schedule_url = String.format(getString(R.string.neis_schedule), "stu", school_code, school_type, year, month);
+            try {
+                doc = Jsoup.connect(schedule_url).get();
+                Elements scheduleAll = doc.select("#contents > div:nth-child(2) > table > tbody > tr");
+                for (Element schedulesList : scheduleAll) {
+                    Elements schedules = schedulesList.select("td > div");
+                    for (Element schedule : schedules) {
+                        Elements scheduleDate = schedule.select("em");
+                        if (scheduleDate.text().isEmpty())
+                            continue;
+                        Elements scheduleTxt = schedule.select("a > strong");
+                        Log.d("GGCJ_D", scheduleTxt.text());
+                        day = day + 1;
+                        String Date = year + "-" + month + "-" + CheckDigit.check(String.valueOf(day));
+                        SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
+                        SharedPreferences.Editor schedule_editor = schedule_sp.edit();
+                        if (scheduleTxt.isEmpty())
+                            schedule_editor.putString(Date, getString(R.string.no_schedule));
+                        else
+                            schedule_editor.putString(Date, scheduleTxt.text());
+                        schedule_editor.apply();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
     }
 }

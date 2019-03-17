@@ -22,7 +22,6 @@ public class InfoPreference extends PreferenceFragment {
             if ("allSource".equals(getKey)) {
                 final Notices notices = new Notices();
                 notices.addNotice(new Notice("GGCJ", "https://github.com/kongwoojin/ggcj", "Copyright (c) 2019 WooJin Kong", new MITLicense()));
-                notices.addNotice(new Notice("NIES API", "https://github.com/agemor/neis-api", "Copyright (c) 2016 HyunJun Kim and other contributers.", new MITLicense()));
                 notices.addNotice(new Notice("jsoup", "https://jsoup.org", "Copyright © 2009 - 2017 Jonathan Hedley (jonathan@hedley.net)", new MITLicense()));
                 notices.addNotice(new Notice("Material Calendar View", "https://github.com/prolificinteractive/material-calendarview", "Copyright (c) 2018 Prolific Interactive", new MITLicense()));
 
