@@ -143,6 +143,7 @@ public class DateReadActivity extends AppCompatActivity
             String school_type = getString(R.string.school_type);
             String meal_type = null;
             String no_meal = null;
+            String res_kcal = getString(R.string.kcal);
 
             if (params[0].equals("2")) {
                 meal_type = "lunch";
@@ -162,12 +163,14 @@ public class DateReadActivity extends AppCompatActivity
                 for (int i = 2; i <= num; i++) {
                     Elements meal = doc.select("#contents > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(" + i + ")");
                     Elements date = doc.select("#contents > div:nth-child(2) > table > thead > tr > th:nth-child(" + i + ")");
+                    Elements kcal = doc.select("#contents > div:nth-child(2) > table > tbody > tr:nth-child(45) > td:nth-child(" + i + ")");
                     String Date = date.text().replaceAll("\\(.\\)", "").replace(".", "-");
                     String meals = meal.html().replace("<br>", "\n");
                     if (meals.isEmpty()) {
                         meals = no_meal;
                     } else {
                         meals = meals.replace("&amp;", "&").trim(); // Replace &amp; to &
+                        meals = meals + "\n\n" + String.format(res_kcal, kcal.text());
                     }
                     System.out.println(Date);
                     SharedPreferences sp = getSharedPreferences(meal_type, MODE_PRIVATE);

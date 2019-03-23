@@ -36,6 +36,7 @@
     <string name="no_schedule">No Schedule</string>
     <string name="next_schedule">No schedule today\nNext schedule is %1$s(%2$s)</string>
     <string name="no_next_schedule">No more schedule this month</string>
+    <string name="kcal">%1$s Kcal</string>
 
     <!-- School Info -->
     <string name="school_code" translatable="false">J100005831</string>
