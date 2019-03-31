@@ -108,10 +108,14 @@ public class MainActivity extends AppCompatActivity
         if (!lunch_str.isEmpty()) {
             lunch_v.setText(lunch_str);
             dinner_v.setText(dinner_str);
-            schedule_v.setText(schedule_str);
         } else {
             lunch_v.setText(getString(R.string.no_lunch_data));
             dinner_v.setText(getString(R.string.no_dinner_data));
+        }
+
+        if (!schedule_str.isEmpty()) {
+            schedule_v.setText(schedule_str);
+        } else {
             schedule_v.setText(getString(R.string.no_schedule_data));
         }
 
