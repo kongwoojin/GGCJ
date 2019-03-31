@@ -2,14 +2,6 @@
 
 [경기창조고등학교](http://ggcj.hs.kr)를 위한  비공식 안드로이드 애플리케이션
 
-## 사진
-
-![ggcj_intro_1](C:\Users\kongw\Desktop\Work\App\GGCJ\app\src\main\res\drawable-xxxhdpi\ggcj_intro_1.png)
-
-![ggcj_intro_2](C:\Users\kongw\Desktop\Work\App\GGCJ\app\src\main\res\drawable-xxxhdpi\ggcj_intro_2.png)
-
-![ggcj_intro_3](C:\Users\kongw\Desktop\Work\App\GGCJ\app\src\main\res\drawable-xxxhdpi\ggcj_intro_3.png)
-
 ## 사용된 오픈소스
 
 - [jsoup](https://jsoup.org)
