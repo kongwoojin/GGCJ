@@ -55,4 +55,14 @@
     <string name="license_check">오픈소스 라이선스 확인</string>
     <string name="developer">개발자</string>
     <string name="developer_name">공우진 (Kongjak)</string>
+
+    <!-- Intro -->
+    <string name="intro_1_title">환영합니다!</string>
+    <string name="intro_1_desc">경기 창조고 앱을 받아주셔서 갑사합니다</string>
+    <string name="intro_2_title">달력</string>
+    <string name="intro_2_desc">
+        달력 메뉴에서 급식과 학사일정을 조회하세요\n
+        원하는 날짜를 선택하시면 됩니다!</string>
+    <string name="intro_3_title">학교 공지사항</string>
+    <string name="intro_3_desc">이제 앱에서 간편하게 학교의 모든 공지사항을 조회하세요!</string>
 </resources>

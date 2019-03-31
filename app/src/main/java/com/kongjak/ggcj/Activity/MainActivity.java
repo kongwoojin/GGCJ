@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkFirstRun();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -65,6 +68,17 @@ public class MainActivity extends AppCompatActivity
         getDay = CheckDigit.check(day.format(date));
 
         setView();
+    }
+
+    private void checkFirstRun() {
+        SharedPreferences sp = getSharedPreferences("AppIntro", MODE_PRIVATE);
+        if (!sp.getBoolean("first", false)) {
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean("first", true);
+            editor.apply();
+            Intent intent = new Intent(this, IntroActivity.class); // Call the AppIntro java class
+            startActivity(intent);
+        }
     }
 
     private void setView() {

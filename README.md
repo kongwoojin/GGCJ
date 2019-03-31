@@ -5,10 +5,9 @@
 ## 사용된 오픈소스
 
 - [jsoup](https://jsoup.org)
-
 - [Material Calendar View](https://github.com/prolificinteractive/material-calendarview)
-
 - [LicensesDialog](https://github.com/PSDev/LicensesDialog)
+- [AppIntro](https://github.com/AppIntro/AppIntro)
 
 ## 라이선스
 

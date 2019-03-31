@@ -37,6 +37,8 @@
         <activity
             android:name=".Activity.NoticeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.kongjak.ggcj.Activity.IntroActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

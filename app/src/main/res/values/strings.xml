@@ -65,4 +65,14 @@
     <string name="license_check">Check Open Source License</string>
     <string name="developer">Developer</string>
     <string name="developer_name">WooJin Kong (Kongjak)</string>
+
+    <!-- Intro -->
+    <string name="intro_1_title">Welcome!</string>
+    <string name="intro_1_desc">Thanks to download GGCJ App</string>
+    <string name="intro_2_title">Calender</string>
+    <string name="intro_2_desc">
+        Check Meal &amp; Schedule at Calender menu\n
+        Just select any date!</string>
+    <string name="intro_3_title">School Notices</string>
+    <string name="intro_3_desc">Now see all school notices in GGCJ App!</string>
 </resources>
