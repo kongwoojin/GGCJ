@@ -41,6 +41,8 @@
     <!-- Notice -->
     <string name="first_page">첫 페이지입니다!</string>
     <string name="last_page">마지막 페이지입니다!</string>
+    <string name="warning">경고!</string>
+    <string name="table_warning">이 게시글은 테이블을 포함하고 있습니다!\n개발자는 이 게시글을 웹사이트에서 보는것을 추천합니다.</string>
 
     <!-- Info -->
     <string name="info_title">안내</string>

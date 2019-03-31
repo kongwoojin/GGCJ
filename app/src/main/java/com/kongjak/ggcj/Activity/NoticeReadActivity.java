@@ -1,5 +1,6 @@
 package com.kongjak.ggcj.Activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,6 +34,7 @@ public class NoticeReadActivity extends AppCompatActivity {
     String dateTxt;
     String contentsTxt;
     String parse_url;
+    String table_count;
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
@@ -101,6 +103,7 @@ public class NoticeReadActivity extends AppCompatActivity {
         private Elements date;
         private Elements contents;
         private Elements contentsroot;
+        private Elements tables;
         private int count;
         private String contentsValue;
 
@@ -120,6 +123,14 @@ public class NoticeReadActivity extends AppCompatActivity {
                 contents.setText(contentsTxt);
 
             asyncDialog.dismiss();
+
+            if (!table_count.equals("0")){
+                AlertDialog.Builder builder = new AlertDialog.Builder(NoticeReadActivity.this);
+                builder.setTitle(getString(R.string.warning));
+                builder.setMessage(getString(R.string.table_warning));
+                builder.setPositiveButton(getString(R.string.ok), null);
+                builder.show();
+            }
             super.onPostExecute(result);
         }
 
@@ -139,10 +150,11 @@ public class NoticeReadActivity extends AppCompatActivity {
             try {
                 Document doc = Jsoup.connect(parse_url).get();
                 root = doc.select("#bbsWrap > div.bbsContent > table > tbody"); // Get root view
-                title = root.select("tr:nth-child(1) > td"); // Get title
-                writer = root.select("tr:nth-child(2) > td"); // Get writer
-                date = root.select("tr:nth-child(4) > td"); // Get date
+                title = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(1) > td"); // Get title
+                writer = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(2) > td"); // Get writer
+                date = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(4) > td"); // Get date
                 contentsroot = root.select("tr:nth-child(5) > td > p"); // Get contents root
+                tables = root.select("tr:nth-child(5) > td > table");
 
                 count = contentsroot.size(); // Count!
 
@@ -156,7 +168,7 @@ public class NoticeReadActivity extends AppCompatActivity {
                         contentsValue = contentsValue + "\n" + contents.text();
                 }
 
-                publishProgress(title.text(), writer.text(), date.text(), contentsValue); // Send it!
+                publishProgress(title.text(), writer.text(), date.text(), contentsValue, String.valueOf(tables.size())); // Send it!
                 Log.d("Parse", title.text());
 
             } catch (IOException e) {
@@ -175,6 +187,7 @@ public class NoticeReadActivity extends AppCompatActivity {
             writertxt = params[1];
             dateTxt = params[2];
             contentsTxt = params[3];
+            table_count = params[4];
         }
     }
 
@@ -215,9 +228,9 @@ public class NoticeReadActivity extends AppCompatActivity {
                 Document doc = Jsoup.connect(parse_url).get();
                 root = doc.select("#bbsWrap > div.bbsContent > table > tbody"); // Get root view
 
-                dl = root.select("tr:nth-child(6) > td > a"); // Get dl url
+                dl = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(6) > td > a"); // Get dl url
                 dl_href = dl.attr("abs:href"); // Parse REAL url(href)
-                dl_root = root.select("tr"); // Get root view
+                dl_root = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr"); // Get root view
                 int count_dl = dl_root.size(); // Count!
                 Log.d("Parse", "cnt_dl" + count_dl);
 
