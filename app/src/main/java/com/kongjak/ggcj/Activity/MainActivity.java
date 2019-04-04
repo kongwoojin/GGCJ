@@ -248,8 +248,8 @@ public class MainActivity extends AppCompatActivity
             int last_day = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
             try {
                 for (int i = today + 1; i <= last_day; i++) {
-                    String getFullDate = getYear + "-" + getMonth + "-" + i;
-                    String getDate = getMonth + "/" + i;
+                    String getFullDate = getYear + "-" + getMonth + "-" + CheckDigit.check(String.valueOf(i));
+                    String getDate = getMonth + "/" + CheckDigit.check(String.valueOf(i));
 
                     SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
                     String schedule_str = schedule_sp.getString(getFullDate, "");
