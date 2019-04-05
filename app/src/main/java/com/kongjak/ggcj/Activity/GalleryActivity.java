@@ -2,7 +2,7 @@ package com.kongjak.ggcj.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,17 +24,19 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.kongjak.ggcj.R;
-import com.kongjak.ggcj.Tools.NoticeAdapter;
-import com.kongjak.ggcj.Tools.Notices;
+import com.kongjak.ggcj.Tools.Gallery;
+import com.kongjak.ggcj.Tools.GalleryAdapter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
-public class NoticeActivity extends AppCompatActivity
+public class GalleryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
     RecyclerView mRecyclerView;
@@ -45,22 +47,14 @@ public class NoticeActivity extends AppCompatActivity
     FloatingActionButton prev, next;
     String parse_url;
 
-    /**
-     * notice_type
-     * 0 is Notice, 1 is Notice for Parents
-     **/
-    int notice_type;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notice);
+        setContentView(R.layout.activity_gallery);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        parse_url = getIntent().getStringExtra("url");
-        notice_type = getIntent().getIntExtra("type", 0);
-        Log.d("URL", String.format(parse_url, page));
+        parse_url = getResources().getString(R.string.gallery_url);
 
         prev = (FloatingActionButton) findViewById(R.id.prev);
         prev.setOnClickListener(new View.OnClickListener() {
@@ -127,12 +121,13 @@ public class NoticeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setNav();
+        navigationView.setCheckedItem(R.id.nav_gallery);
 
         mRecyclerView = findViewById(R.id.list);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
         MainPageTask asyncTask = new MainPageTask();
         asyncTask.execute();
 
@@ -157,20 +152,10 @@ public class NoticeActivity extends AppCompatActivity
             }
         });
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         prev.hide();
         next.hide();
-    }
-
-    public void setNav() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if (notice_type == 0) {
-            navigationView.setCheckedItem(R.id.nav_notice);
-        } else if (notice_type == 1) {
-            navigationView.setCheckedItem(R.id.nav_notice_parents);
-        }
     }
 
     public void reload() {
@@ -207,60 +192,10 @@ public class NoticeActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_notice && !(notice_type == 0)) {
-            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
-            intent.putExtra("url", getString(R.string.notice_url));
-            intent.putExtra("type", 0);
-            startActivity(intent);
-        } else if (id == R.id.nav_notice_parents && !(notice_type == 1)) {
-            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
-            intent.putExtra("url", getString(R.string.notice_parents_url));
-            intent.putExtra("type", 1);
-            startActivity(intent);
-        } else if (id == R.id.nav_date) {
-            Intent intent = new Intent(getBaseContext(), DateActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(getBaseContext(), GalleryActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_timetable) {
-            String url = "http://comci.kr/st";
-            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-            CustomTabsIntent customTabsIntent = builder.build();
-            customTabsIntent.launchUrl(NoticeActivity.this, Uri.parse(url));
-        } else if (id == R.id.nav_send) {
-            Intent email = new Intent(Intent.ACTION_SENDTO);
-            email.setData(Uri.parse("mailto:"));
-            String[] address = {"ggcj@kongjak.com"};
-            email.putExtra(Intent.EXTRA_EMAIL, address);
-            String title = getResources().getString(R.string.nav_send_intent);
-            Intent chooser = Intent.createChooser(email, title);
-            if (email.resolveActivity(getPackageManager()) != null) {
-                startActivity(chooser);
-            }
-        } else if (id == R.id.nav_info) {
-            Intent intent = new Intent(getBaseContext(), InfoActivity.class);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.notice, menu);
+        getMenuInflater().inflate(R.menu.gallery, menu);
         return true;
     }
 
@@ -281,33 +216,73 @@ public class NoticeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    protected void onResume() {
-        super.onResume();
-        setNav();
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_notice) {
+            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
+            intent.putExtra("url", getString(R.string.notice_url));
+            intent.putExtra("type", 0);
+            startActivity(intent);
+        } else if (id == R.id.nav_notice_parents) {
+            Intent intent = new Intent(getBaseContext(), NoticeActivity.class);
+            intent.putExtra("url", getString(R.string.notice_parents_url));
+            intent.putExtra("type", 1);
+            startActivity(intent);
+        } else if (id == R.id.nav_date) {
+            Intent intent = new Intent(getBaseContext(), DateActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_timetable) {
+            String url = "http://comci.kr/st";
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(GalleryActivity.this, Uri.parse(url));
+        } else if (id == R.id.nav_send) {
+            Intent email = new Intent(Intent.ACTION_SENDTO);
+            email.setData(Uri.parse("mailto:"));
+            String[] address = {"ggcj@kongjak.com"};
+            email.putExtra(Intent.EXTRA_EMAIL, address);
+            String title = getResources().getString(R.string.nav_send_intent);
+            Intent chooser = Intent.createChooser(email, title);
+            if (email.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }
+        } else if (id == R.id.nav_info) {
+            Intent intent = new Intent(getBaseContext(), InfoActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
-    private class MainPageTask extends AsyncTask<String, String, Void> {
-        ArrayList<Notices> parsed = new ArrayList<>();
+    private class MainPageTask extends AsyncTask<String, Object, Void> {
+        ArrayList<Gallery> parsed = new ArrayList<>();
         ProgressDialog asyncDialog = new ProgressDialog(
-                NoticeActivity.this);
+                GalleryActivity.this);
         private Elements root;
         private Elements title;
         private Elements list;
-        private Elements writer;
-        private Elements date;
+        private Elements imageUrl;
         private Elements url;
-        private Elements numoflist;
+        private Elements last_page_url;
         private int count;
 
         @Override
         protected void onPostExecute(Void result) {
             //doInBackground 작업이 끝나고 난뒤의 작업
             Log.d("Parse", "End");
-            ArrayList<Notices> NoticeArrayList = new ArrayList<>();
-            NoticeAdapter myAdapter = new NoticeAdapter(NoticeArrayList);
+            ArrayList<Gallery> GalleryArrayList = new ArrayList<>();
+            GalleryAdapter myAdapter = new GalleryAdapter(GalleryArrayList);
             mRecyclerView.setAdapter(myAdapter);
-            NoticeArrayList.addAll(parsed); // Add parsed's values to Real array list
+            GalleryArrayList.addAll(parsed); // Add parsed's values to Real array list
             asyncDialog.dismiss();
             checkFabHide();
             super.onPostExecute(result);
@@ -327,29 +302,30 @@ public class NoticeActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(String... params) {
             //백그라운드 작업이 진행되는 곳.
-            Resources res = getResources();
             String notice_url = String.format(parse_url, page);
             try {
                 Log.d("Parse", notice_url);
                 Document doc = Jsoup.connect(notice_url).get();
-                root = doc.select("#bbsWrap > form > div.bbsContent > table > tbody"); // Get root view
-                list = doc.select("#bbsWrap > form > div.bbsContent > table > tbody > tr"); // Get notice list
+                root = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul"); // Get root view
+                list = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul > li"); // Get notice list
+                last_page_url = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsPage > a:nth-child(14)");
+                if (page == 1)
+                    last_page = Integer.parseInt(last_page_url.attr("abs:href").replace(getResources().getString(R.string.gallery_url_filter), ""));
                 count = list.size(); // Count notice!
 
                 Log.d("Parse", "Count" + String.valueOf(count));
 
                 for (int i = 1; i <= count; i++) { // loop
-                    title = root.select("tr:nth-child(" + i + ") > td.tit"); // Get title
-                    numoflist = root.select("tr:nth-child(" + i + ") > td:nth-child(1)"); // Get number of notice
-                    writer = root.select("tr:nth-child(" + i + ") > td:nth-child(4)"); // Get writer
-                    date = root.select("tr:nth-child(" + i + ") > td:nth-child(5)"); // Get date
-                    url = root.select("tr:nth-child(" + i + ") > td.tit > a"); // Get url (Elements)
-                    String notice_href = url.attr("abs:href"); // Parse REAL url(href)
-
-                    publishProgress(title.text(), writer.text(), date.text(), notice_href, numoflist.text()); // Send it!
+                    title = root.select("li:nth-child(" + i + ") > a > span");
+                    imageUrl = root.select("li:nth-child(" + i + ") > a > img");
+                    url = root.select("li:nth-child(" + i + ") > a");
+                    String full_image_url = "http://ggcj.hs.kr/main.php" + imageUrl.attr("src");
+                    InputStream is = (InputStream) new URL(full_image_url).getContent();
+                    Drawable d = Drawable.createFromStream(is, "src name");
                     Log.d("Parse", title.text());
-                    Log.d("Parse", "Count: " + i);
-                    Log.d("Parse", url.toString());
+                    Log.d("Parse", "http://ggcj.hs.kr/main.php" + imageUrl.attr("src"));
+                    Log.d("Parse", url.attr("abs:href"));
+                    publishProgress(title.text(), url.attr("abs:href"), d);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -360,15 +336,11 @@ public class NoticeActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onProgressUpdate(String... params) { // Receive from doInBackground
-            double last_notice_num;
-            parsed.add(new Notices(params[0], params[1], params[2], params[3])); // Add values to array list
-            Log.d("Parse", params[3]);
-            if (page == 1 && !params[4].equals("공지")) {
-                last_notice_num = Integer.parseInt(params[4]);
-                last_page = (int) Math.ceil((last_notice_num + 14)/15); // Get last page number
-                Log.d("GGCJ", String.valueOf(last_page));
-            }
+        protected void onProgressUpdate(Object... params) { // Receive from doInBackground
+            String title = (String) params[0];
+            String url = (String) params[1];
+            Drawable img = (Drawable) params[2];
+            parsed.add(new Gallery(title, url, img));
         }
     }
 }

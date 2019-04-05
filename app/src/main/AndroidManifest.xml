@@ -13,8 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Activity.GalleryReadActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.GalleryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Activity.InfoActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.DateReadActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -37,8 +43,9 @@
         <activity
             android:name=".Activity.NoticeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.kongjak.ggcj.Activity.IntroActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Activity.IntroActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

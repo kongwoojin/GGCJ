@@ -21,6 +21,10 @@
             android:icon="@drawable/ic_menu_calender"
             android:title="@string/nav_date" />
         <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/nav_gallery" />
+        <item
             android:id="@+id/nav_timetable"
             android:icon="@drawable/ic_menu_timetable"
             android:title="@string/nav_timetable" />

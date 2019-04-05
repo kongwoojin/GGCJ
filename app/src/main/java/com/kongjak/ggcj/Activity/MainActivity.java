@@ -155,6 +155,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_date) {
             Intent intent = new Intent(getBaseContext(), DateActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_gallery) {
+            Intent intent = new Intent(getBaseContext(), GalleryActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_timetable) {
             String url = "http://comci.kr/st";
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();

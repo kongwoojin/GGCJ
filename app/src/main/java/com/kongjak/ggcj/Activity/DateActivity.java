@@ -99,6 +99,9 @@ public class DateActivity extends AppCompatActivity
             intent.putExtra("url", getString(R.string.notice_parents_url));
             intent.putExtra("type", 1);
             startActivity(intent);
+        } else if (id == R.id.nav_gallery) {
+            Intent intent = new Intent(getBaseContext(), GalleryActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_timetable) {
             String url = "http://comci.kr/st";
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();

@@ -16,6 +16,7 @@
     <string name="nav_notice">공지사항</string>
     <string name="nav_notice_parents">가정통신문</string>
     <string name="nav_date">달력</string>
+    <string name="nav_gallery">갤러리</string>
     <string name="nav_timetable">시간표</string>
     <string name="nav_app">애플리케이션</string>
     <string name="nav_send">보내기</string>
