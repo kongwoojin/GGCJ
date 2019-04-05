@@ -124,7 +124,7 @@ public class NoticeReadActivity extends AppCompatActivity {
 
             asyncDialog.dismiss();
 
-            if (!table_count.equals("0")){
+            if (!table_count.equals("0")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(NoticeReadActivity.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.table_warning));
@@ -228,8 +228,6 @@ public class NoticeReadActivity extends AppCompatActivity {
                 Document doc = Jsoup.connect(parse_url).get();
                 root = doc.select("#bbsWrap > div.bbsContent > table > tbody"); // Get root view
 
-                dl = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(6) > td > a"); // Get dl url
-                dl_href = dl.attr("abs:href"); // Parse REAL url(href)
                 dl_root = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr"); // Get root view
                 int count_dl = dl_root.size(); // Count!
                 Log.d("Parse", "cnt_dl" + count_dl);
