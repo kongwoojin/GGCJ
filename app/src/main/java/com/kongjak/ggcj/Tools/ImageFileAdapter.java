@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.kongjak.ggcj.R;
 
 import java.util.ArrayList;
@@ -38,7 +40,11 @@ public class ImageFileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         if (data.getImageAvailable()) {
             myViewHolder.file.setVisibility(View.GONE);
-            myViewHolder.image.setImageDrawable(ImageFileArrayList.get(position).image);
+            Glide.with(myViewHolder.mCardView)
+                    .load(data.getUrl())
+                    .placeholder(R.drawable.ic_thumbnail)
+                    .apply(new RequestOptions().override(1000, 1000))
+                    .into(myViewHolder.image);
         } else {
             myViewHolder.image.setVisibility(View.GONE);
             myViewHolder.file.setText(ImageFileArrayList.get(position).title);

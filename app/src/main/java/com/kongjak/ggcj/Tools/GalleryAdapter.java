@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.kongjak.ggcj.Activity.GalleryReadActivity;
 import com.kongjak.ggcj.Activity.NoticeReadActivity;
 import com.kongjak.ggcj.R;
@@ -38,8 +40,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final Gallery data = GalleryArrayList.get(position);
 
         myViewHolder.title.setText(GalleryArrayList.get(position).title);
-        myViewHolder.thumbnail.setImageDrawable(GalleryArrayList.get(position).thumbnail);
-
+        Glide.with(myViewHolder.mCardView)
+                .load(data.getImageUrl())
+                .placeholder(R.drawable.ic_thumbnail)
+                .centerCrop()
+                .apply(new RequestOptions().override(200, 200))
+                .into(myViewHolder.thumbnail);
         myViewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

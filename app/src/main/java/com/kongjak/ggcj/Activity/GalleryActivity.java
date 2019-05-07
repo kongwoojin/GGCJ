@@ -320,12 +320,10 @@ public class GalleryActivity extends AppCompatActivity
                     imageUrl = root.select("li:nth-child(" + i + ") > a > img");
                     url = root.select("li:nth-child(" + i + ") > a");
                     String full_image_url = "http://ggcj.hs.kr/main.php" + imageUrl.attr("src");
-                    InputStream is = (InputStream) new URL(full_image_url).getContent();
-                    Drawable d = Drawable.createFromStream(is, "src name");
                     Log.d("Parse", title.text());
                     Log.d("Parse", "http://ggcj.hs.kr/main.php" + imageUrl.attr("src"));
                     Log.d("Parse", url.attr("abs:href"));
-                    publishProgress(title.text(), url.attr("abs:href"), d);
+                    publishProgress(title.text(), url.attr("abs:href"), full_image_url);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -339,8 +337,8 @@ public class GalleryActivity extends AppCompatActivity
         protected void onProgressUpdate(Object... params) { // Receive from doInBackground
             String title = (String) params[0];
             String url = (String) params[1];
-            Drawable img = (Drawable) params[2];
-            parsed.add(new Gallery(title, url, img));
+            String image_url = (String) params[2];
+            parsed.add(new Gallery(title, url, image_url));
         }
     }
 }

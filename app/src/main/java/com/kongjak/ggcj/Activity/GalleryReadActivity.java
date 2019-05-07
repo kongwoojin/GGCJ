@@ -202,6 +202,7 @@ public class GalleryReadActivity extends AppCompatActivity {
         private Elements dl;
         private String dl_href;
         private Elements dl_root;
+        private Elements img;
 
         @Override
         protected void onPostExecute(Void result) {
@@ -237,9 +238,8 @@ public class GalleryReadActivity extends AppCompatActivity {
                 for (int i = 6; i <= count_dl; i++) { // loop
                     dl = root.select("tr:nth-child(" + i + ") > td > a"); // Get dl url
                     dl_href = dl.attr("abs:href"); // Parse REAL url(href)
-                    InputStream is = (InputStream) new URL(dl_href).getContent();
-                    Drawable d = Drawable.createFromStream(is, "src name");
-                    publishProgress(dl.text(), dl_href, d); // Send it!
+                    img = root.select("tr:nth-child(" + i + ") > td > img");
+                    publishProgress(dl.text(), dl_href, img.size()); // Send it!
                 }
 
             } catch (IOException e) {
@@ -255,13 +255,14 @@ public class GalleryReadActivity extends AppCompatActivity {
         protected void onProgressUpdate(Object... params) { // Receive from doInBackground
             String title = (String) params[0];
             String url = (String) params[1];
-            Drawable image = (Drawable) params[2];
+            Integer img_tag = (Integer) params[2];
+            System.out.println(img_tag);
             boolean isImageAvailable;
-            if (image == null)
+            if (img_tag.equals(0))
                 isImageAvailable = false;
             else
                 isImageAvailable = true;
-            file_parsed.add(new ImageFiles(title, url, isImageAvailable, image));
+            file_parsed.add(new ImageFiles(title, url, isImageAvailable));
         }
     }
 }

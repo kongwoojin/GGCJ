@@ -5,15 +5,20 @@ import android.graphics.drawable.Drawable;
 public class Gallery {
     public String title;
     public String url;
-    public Drawable thumbnail;
+    // public Drawable thumbnail;
+    public String imageUrl;
 
-    public Gallery(String title, String url, Drawable thumbnail) {
+    public Gallery(String title, String url, String imageUrl) {
         this.title = title;
         this.url = url;
-        this.thumbnail = thumbnail;
+        this.imageUrl = imageUrl;
     }
 
     public String getUrl() {
         return this.url;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
     }
 }

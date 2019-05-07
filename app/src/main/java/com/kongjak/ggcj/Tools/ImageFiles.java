@@ -6,13 +6,12 @@ public class ImageFiles {
     public String title;
     public String url;
     public boolean isImageAvailable;
-    public Drawable image;
+    // public Drawable image;
 
-    public ImageFiles(String title, String url,boolean isImageAvailable, Drawable image) {
+    public ImageFiles(String title, String url, boolean isImageAvailable) {
         this.title = title;
         this.url = url;
         this.isImageAvailable = isImageAvailable;
-        this.image = image;
     }
 
     public String getUrl() {
