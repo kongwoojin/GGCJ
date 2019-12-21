@@ -1,8 +1,10 @@
 package com.kongjak.ggcj.Activity;
 
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,13 +15,8 @@ import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
 import com.kongjak.ggcj.Tools.CheckDigit;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
+import com.kongjak.ggcj.Tools.ParseMeal;
+import com.kongjak.ggcj.Tools.ParseSchedule;
 
 public class DateReadActivity extends AppCompatActivity
         implements SwipeRefreshLayout.OnRefreshListener {
@@ -36,6 +33,11 @@ public class DateReadActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("MealParseEnd");
+        filter.addAction("ScheduleParseEnd");
+        registerReceiver(mBroadcastReceiver, filter);
 
         dayOfMonth = CheckDigit.check(getIntent().getStringExtra("dayOfMonth"));
         month = CheckDigit.check(getIntent().getStringExtra("month"));
@@ -88,16 +90,16 @@ public class DateReadActivity extends AppCompatActivity
     }
 
     public void getMeal() {
-        WeekMealTask lunchTask = new WeekMealTask();
-        lunchTask.execute("2");
+        ParseMeal.WeekMealTask lunchTask = new ParseMeal.WeekMealTask(DateReadActivity.this);
+        lunchTask.execute("2", year, month, dayOfMonth);
 
-        WeekMealTask dinnerTask = new WeekMealTask();
-        dinnerTask.execute("3");
+        ParseMeal.WeekMealTask dinnerTask = new ParseMeal.WeekMealTask(DateReadActivity.this);
+        dinnerTask.execute("3", year, month, dayOfMonth);
     }
 
     public void getSchedule() {
-        ScheduleTask asyncTask = new ScheduleTask();
-        asyncTask.execute();
+        ParseSchedule.ScheduleTask asyncTask = new ParseSchedule.ScheduleTask(DateReadActivity.this);
+        asyncTask.execute(year, month);
     }
 
     @Override
@@ -114,140 +116,17 @@ public class DateReadActivity extends AppCompatActivity
     }
 
 
-    public class WeekMealTask extends AsyncTask<String, String, Void> {
-        ProgressDialog asyncDialog = new ProgressDialog(
-                DateReadActivity.this);
-
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
-        protected void onPostExecute(Void result) {
+        public void onReceive(Context context, Intent intent) {
+            Log.d("GGCJ", "Received ParseEnd");
             setView();
-            asyncDialog.dismiss();
-            super.onPostExecute(result);
         }
+    };
 
-        @Override
-        protected void onPreExecute() {
-            String loading = getString(R.string.loading);
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            asyncDialog.setMessage(loading);
-
-            // show dialog
-            asyncDialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            //백그라운드 작업이 진행되는 곳.
-            String school_code = getString(R.string.school_code);
-            String school_type = getString(R.string.school_type);
-            String meal_type = null;
-            String no_meal = null;
-            String res_kcal = getString(R.string.kcal);
-
-            if (params[0].equals("2")) {
-                meal_type = "lunch";
-                no_meal = getString(R.string.no_lunch);
-            } else if (params[0].equals("3")) {
-                meal_type = "dinner";
-                no_meal = getString(R.string.no_dinner);
-            }
-
-            Document doc;
-            String meal_url = String.format(getString(R.string.neis_meal), "stu", school_code, school_type, params[0], year, month, dayOfMonth);
-            try {
-                doc = Jsoup.connect(meal_url).get();
-                Elements list = doc.select("#contents > div:nth-child(2) > table > thead > tr > th");
-                int num = list.size();
-                System.out.println(num);
-                for (int i = 2; i <= num; i++) {
-                    Elements meal = doc.select("#contents > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(" + i + ")");
-                    Elements date = doc.select("#contents > div:nth-child(2) > table > thead > tr > th:nth-child(" + i + ")");
-                    Elements kcal = doc.select("#contents > div:nth-child(2) > table > tbody > tr:nth-child(45) > td:nth-child(" + i + ")");
-                    String Date = date.text().replaceAll("\\(.\\)", "").replace(".", "-");
-                    String meals = meal.html().replace("<br>", "\n");
-                    if (meals.isEmpty()) {
-                        meals = no_meal;
-                    } else {
-                        meals = meals.replace("&amp;", "&").trim(); // Replace &amp; to &
-                        meals = meals + "\n\n" + String.format(res_kcal, kcal.text());
-                    }
-                    System.out.println(Date);
-                    SharedPreferences sp = getSharedPreferences(meal_type, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString(Date, meals);
-                    editor.apply();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    private class ScheduleTask extends AsyncTask<String, String, Void> {
-        ProgressDialog asyncDialog = new ProgressDialog(
-                DateReadActivity.this);
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //doInBackground 작업이 끝나고 난뒤의 작업
-            Log.d("Parse", "End");
-            setView();
-            asyncDialog.dismiss();
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            String loading = getString(R.string.loading);
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            asyncDialog.setMessage(loading);
-
-            // show dialog
-            asyncDialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            //백그라운드 작업이 진행되는 곳.
-            String school_code = getString(R.string.school_code);
-            String school_type = getString(R.string.school_type);
-            int day = 0;
-            Document doc;
-            String schedule_url = String.format(getString(R.string.neis_schedule), "stu", school_code, school_type, year, month);
-            try {
-                doc = Jsoup.connect(schedule_url).get();
-                Elements scheduleAll = doc.select("#contents > div:nth-child(2) > table > tbody > tr");
-                for (Element schedulesList : scheduleAll) {
-                    Elements schedules = schedulesList.select("td > div");
-                    for (Element schedule : schedules) {
-                        StringBuilder schedule_txt = new StringBuilder();
-                        Elements scheduleDate = schedule.select("em");
-                        if (scheduleDate.text().isEmpty())
-                            continue;
-                        Elements scheduleA = schedule.select("a");
-                        for (Element scA : scheduleA) {
-                            Elements scheduleTxt = scA.select("strong");
-                            schedule_txt.append(scheduleTxt.text()).append("\n");
-                        }
-                        day = day + 1;
-                        String Date = year + "-" + month + "-" + CheckDigit.check(String.valueOf(day));
-                        SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
-                        SharedPreferences.Editor schedule_editor = schedule_sp.edit();
-                        if (schedule_txt.toString().isEmpty())
-                            schedule_editor.putString(Date, getString(R.string.no_schedule));
-                        else
-                            schedule_editor.putString(Date, schedule_txt.toString().trim());
-                        schedule_editor.apply();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
     }
 }

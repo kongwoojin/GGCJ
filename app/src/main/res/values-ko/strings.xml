@@ -9,6 +9,7 @@
     <string name="action_settings">Settings</string>
     <string name="loading">로딩중...</string>
     <string name="ok">확인</string>
+    <string name="cancel">취소</string>
     <string name="date">%1$s/%2$s/%3$s</string>
 
     <!-- NavBars && Menu -->
@@ -26,6 +27,7 @@
     <string name="menu_notice_website">사이트에서 보기</string>
 
     <!-- Meal & Schedule -->
+    <string name="meal">급식</string>
     <string name="lunch">점심</string>
     <string name="dinner">저녁</string>
     <string name="schedule">학사일정</string>
@@ -38,6 +40,7 @@
     <string name="next_schedule">오늘은 학사일정이 없습니다\n다음 학사일정은 %1$s(%2$s)입니다</string>
     <string name="no_next_schedule">이번달에는 학사일정이 더 없습니다</string>
     <string name="kcal">%1$s 칼로리</string>
+    <string name="data_empty_dialog">%1$s 데이터가 존재하지 않습니다!\n지금 받아오시겠습니까?</string>
 
     <!-- Notice -->
     <string name="first_page">첫 페이지입니다!</string>

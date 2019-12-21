@@ -1,7 +1,10 @@
 package com.kongjak.ggcj.Activity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,17 +26,22 @@ import android.widget.TextView;
 
 import com.kongjak.ggcj.R;
 import com.kongjak.ggcj.Tools.CheckDigit;
+import com.kongjak.ggcj.Tools.ParseMeal;
+import com.kongjak.ggcj.Tools.ParseSchedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String getYear, getMonth, getDay;
+    private String getYear, getMonth, getDay, getDate;
     private String next_schedule_day = "", next_schedule = "";
+
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,30 +50,35 @@ public class MainActivity extends AppCompatActivity
 
         checkFirstRun();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.setCheckedItem(R.id.nav_home);
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("MealParseEnd");
+        filter.addAction("ScheduleParseEnd");
+        registerReceiver(mBroadcastReceiver, filter);
+
         long now = System.currentTimeMillis();
         Date date = new Date(now);
 
-        SimpleDateFormat year = new SimpleDateFormat("yyyy");
+        SimpleDateFormat year = new SimpleDateFormat("yyyy", Locale.KOREA);
         getYear = year.format(date);
 
-        SimpleDateFormat month = new SimpleDateFormat("MM");
+        SimpleDateFormat month = new SimpleDateFormat("MM", Locale.KOREA);
         getMonth = CheckDigit.check(month.format(date));
 
-        SimpleDateFormat day = new SimpleDateFormat("dd");
+        SimpleDateFormat day = new SimpleDateFormat("dd", Locale.KOREA);
         getDay = CheckDigit.check(day.format(date));
 
         setView();
@@ -82,52 +96,69 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setView() {
-        String getDate = getYear + "-" + getMonth + "-" + getDay;
+        getDate = getYear + "-" + getMonth + "-" + getDay;
+        checkMeal();
+        checkSchedule();
+    }
 
+    private void checkMeal() {
+        SharedPreferences lunch_sp = getSharedPreferences("lunch", MODE_PRIVATE);
+        String lunch_str = lunch_sp.getString(getDate, "");
+
+        if (!lunch_str.isEmpty()) {
+            setMealView();
+        } else {
+            EmptyDialog(getString(R.string.meal));
+        }
+    }
+
+    private void setMealView() {
         SharedPreferences lunch_sp = getSharedPreferences("lunch", MODE_PRIVATE);
         String lunch_str = lunch_sp.getString(getDate, "");
 
         SharedPreferences dinner_sp = getSharedPreferences("dinner", MODE_PRIVATE);
         String dinner_str = dinner_sp.getString(getDate, "");
 
+        TextView lunch_v = findViewById(R.id.item_lunch);
+        lunch_v.setVisibility(View.VISIBLE);
+
+        TextView dinner_v = findViewById(R.id.item_dinner);
+        dinner_v.setVisibility(View.VISIBLE);
+
+        lunch_v.setText(lunch_str);
+        dinner_v.setText(dinner_str);
+    }
+
+    private void checkSchedule() {
         SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
         String schedule_str = schedule_sp.getString(getDate, "");
 
-        TextView lunch_v = (TextView) findViewById(R.id.item_lunch);
-        lunch_v.setVisibility(View.VISIBLE);
-
-        TextView dinner_v = (TextView) findViewById(R.id.item_dinner);
-        dinner_v.setVisibility(View.VISIBLE);
-
-        TextView schedule_v = (TextView) findViewById(R.id.item_schedule);
+        TextView schedule_v = findViewById(R.id.item_schedule);
         schedule_v.setVisibility(View.VISIBLE);
 
-        Log.d("Parse", lunch_str);
-        Log.d("Parse", dinner_str);
-
-        if (!lunch_str.isEmpty()) {
-            lunch_v.setText(lunch_str);
-            dinner_v.setText(dinner_str);
-        } else {
-            lunch_v.setText(getString(R.string.no_lunch_data));
-            dinner_v.setText(getString(R.string.no_dinner_data));
-        }
-
         if (!schedule_str.isEmpty()) {
-            schedule_v.setText(schedule_str);
-        } else {
-            schedule_v.setText(getString(R.string.no_schedule_data));
-        }
-
-        if (schedule_str.equals(getString(R.string.no_schedule))) {
+            setScheduleView();
+        } else if (schedule_str.equals(getString(R.string.no_schedule))) {
             NextSchedule asyncTask = new NextSchedule();
             asyncTask.execute();
+        } else {
+            EmptyDialog(getString(R.string.schedule));
         }
+    }
+
+    private void setScheduleView() {
+        SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
+        String schedule_str = schedule_sp.getString(getDate, "");
+
+        TextView schedule_v = findViewById(R.id.item_schedule);
+        schedule_v.setVisibility(View.VISIBLE);
+
+        schedule_v.setText(schedule_str);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -178,17 +209,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_home);
-        setView();
     }
 
     @Override
@@ -216,6 +239,35 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void EmptyDialog(String dataType) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(String.format(getString(R.string.data_empty_dialog), dataType));
+        builder.setPositiveButton(getString(R.string.ok), (dialog, id) -> {
+            if (dataType.equals(getString(R.string.meal))) {
+                getDatas(0);
+            } else if (dataType.equals(getString(R.string.schedule))) {
+                getDatas(1);
+            }
+        });
+
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.dismiss());
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void getDatas(int type) {
+        if (type == 0) {
+            ParseMeal.WeekMealTask lunchTask = new ParseMeal.WeekMealTask(MainActivity.this);
+            lunchTask.execute("2", getYear, getMonth, getDay);
+
+            ParseMeal.WeekMealTask dinnerTask = new ParseMeal.WeekMealTask(MainActivity.this);
+            dinnerTask.execute("3", getYear, getMonth, getDay);
+        } else if (type == 1) {
+            ParseSchedule.ScheduleTask asyncTask = new ParseSchedule.ScheduleTask(MainActivity.this);
+            asyncTask.execute(getYear, getMonth);
+        }
+    }
+
     private class NextSchedule extends AsyncTask<String, String, Void> {
         ProgressDialog asyncDialog = new ProgressDialog(
                 MainActivity.this);
@@ -223,7 +275,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void result) {
             //doInBackground 작업이 끝나고 난뒤의 작업
-            TextView schedule_v = (TextView) findViewById(R.id.item_schedule);
+            TextView schedule_v = findViewById(R.id.item_schedule);
             if (next_schedule.isEmpty()) {
                 schedule_v.setText(getString(R.string.no_next_schedule));
             } else {
@@ -274,5 +326,37 @@ public class MainActivity extends AppCompatActivity
             next_schedule_day = params[0];
             next_schedule = params[1];
         }
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("MealParseEnd")) {
+                setMealView();
+            } else if (intent.getAction().equals("ScheduleParseEnd")) {
+                setScheduleView();
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_home);
+        Log.d("GGCJ", "Resume");
+        setMealView();
+        setScheduleView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
     }
 }
