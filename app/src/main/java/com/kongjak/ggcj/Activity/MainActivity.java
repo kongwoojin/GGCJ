@@ -138,9 +138,6 @@ public class MainActivity extends AppCompatActivity
 
         if (!schedule_str.isEmpty()) {
             setScheduleView();
-        } else if (schedule_str.equals(getString(R.string.no_schedule))) {
-            NextSchedule asyncTask = new NextSchedule();
-            asyncTask.execute();
         } else {
             EmptyDialog(getString(R.string.schedule));
         }
@@ -153,7 +150,12 @@ public class MainActivity extends AppCompatActivity
         TextView schedule_v = findViewById(R.id.item_schedule);
         schedule_v.setVisibility(View.VISIBLE);
 
-        schedule_v.setText(schedule_str);
+        if (schedule_str.equals(getString(R.string.no_schedule))) {
+            NextSchedule asyncTask = new NextSchedule();
+            asyncTask.execute();
+        } else {
+            schedule_v.setText(schedule_str);
+        }
     }
 
     @Override
