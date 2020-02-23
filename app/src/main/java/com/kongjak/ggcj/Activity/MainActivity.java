@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
@@ -39,9 +38,18 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String getYear, getMonth, getDay, getDate;
-    private String next_schedule_day = "", next_schedule = "";
 
     private AlertDialog alertDialog;
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("MealParseEnd")) {
+                setMealView();
+            } else if (intent.getAction().equals("ScheduleParseEnd")) {
+                setScheduleView();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,8 +159,7 @@ public class MainActivity extends AppCompatActivity
         schedule_v.setVisibility(View.VISIBLE);
 
         if (schedule_str.equals(getString(R.string.no_schedule))) {
-            NextSchedule asyncTask = new NextSchedule();
-            asyncTask.execute();
+            getNextSchedule();
         } else {
             schedule_v.setText(schedule_str);
         }
@@ -237,7 +244,6 @@ public class MainActivity extends AppCompatActivity
             CustomTabsIntent customTabsIntent = builder.build();
             customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -270,76 +276,52 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private class NextSchedule extends AsyncTask<String, String, Void> {
+    private void getNextSchedule() {
+        int today = Calendar.getInstance(TimeZone.getDefault()).get(Calendar.DAY_OF_MONTH);
+        int last_day = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        TextView schedule_v = findViewById(R.id.item_schedule);
+
         ProgressDialog asyncDialog = new ProgressDialog(
                 MainActivity.this);
+        String loading = getString(R.string.loading);
+        asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        asyncDialog.setMessage(loading);
 
-        @Override
-        protected void onPostExecute(Void result) {
-            //doInBackground 작업이 끝나고 난뒤의 작업
-            TextView schedule_v = findViewById(R.id.item_schedule);
-            if (next_schedule.isEmpty()) {
-                schedule_v.setText(getString(R.string.no_next_schedule));
-            } else {
-                schedule_v.setText(String.format(getString(R.string.next_schedule), next_schedule, next_schedule_day));
-            }
-            asyncDialog.dismiss();
-            super.onPostExecute(result);
-        }
+        // show dialog
+        asyncDialog.show();
 
-        @Override
-        protected void onPreExecute() {
-            String loading = getString(R.string.loading);
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            asyncDialog.setMessage(loading);
+        new Thread(() -> {
+            String nextSchedule = null, nextScheduleDay = null;
 
-            // show dialog
-            asyncDialog.show();
-            super.onPreExecute();
-        }
+            for (int i = today + 1; i <= last_day; i++) {
+                String getFullDate = getYear + "-" + getMonth + "-" + CheckDigit.check(String.valueOf(i));
+                String getDate = getMonth + "/" + CheckDigit.check(String.valueOf(i));
 
-        @Override
-        protected Void doInBackground(String... params) {
-            //백그라운드 작업이 진행되는 곳.
-            int today = Calendar.getInstance(TimeZone.getDefault()).get(Calendar.DAY_OF_MONTH);
-            int last_day = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-            try {
-                for (int i = today + 1; i <= last_day; i++) {
-                    String getFullDate = getYear + "-" + getMonth + "-" + CheckDigit.check(String.valueOf(i));
-                    String getDate = getMonth + "/" + CheckDigit.check(String.valueOf(i));
+                SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
+                String schedule_str = schedule_sp.getString(getFullDate, "");
 
-                    SharedPreferences schedule_sp = getSharedPreferences("schedule", MODE_PRIVATE);
-                    String schedule_str = schedule_sp.getString(getFullDate, "");
-
-                    if (!schedule_str.equals(getString(R.string.no_schedule))) {
-                        publishProgress(getDate, schedule_str); // Send it!
-                        break;
-                    }
-
+                if (!schedule_str.equals(getString(R.string.no_schedule))) {
+                    nextSchedule = schedule_str;
+                    nextScheduleDay = getDate;
+                    break;
                 }
-            } catch (ClassCastException e) {
-                e.printStackTrace();
             }
-            return null;
-        }
 
-        @Override
-        protected void onProgressUpdate(String... params) { // Receive from doInBackground
-            next_schedule_day = params[0];
-            next_schedule = params[1];
-        }
+            String finalNextSchedule = nextSchedule, finalNextScheduleDay = nextScheduleDay;
+
+            runOnUiThread(() -> {
+                if (finalNextSchedule == null || finalNextSchedule.isEmpty()) {
+                    schedule_v.setText(getString(R.string.no_next_schedule));
+                } else {
+                    schedule_v.setText(String.format(getString(R.string.next_schedule), finalNextSchedule, finalNextScheduleDay));
+                }
+            });
+
+        }).start();
+
+        asyncDialog.dismiss();
     }
-
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("MealParseEnd")) {
-                setMealView();
-            } else if (intent.getAction().equals("ScheduleParseEnd")) {
-                setScheduleView();
-            }
-        }
-    };
 
     @Override
     protected void onPause() {
