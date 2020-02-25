@@ -266,10 +266,10 @@ public class MainActivity extends AppCompatActivity
     private void getDatas(int type) {
         if (type == 0) {
             ParseMeal.WeekMealTask lunchTask = new ParseMeal.WeekMealTask(MainActivity.this);
-            lunchTask.execute("2", getYear, getMonth, getDay);
+            lunchTask.execute("2", getYear, getMonth);
 
             ParseMeal.WeekMealTask dinnerTask = new ParseMeal.WeekMealTask(MainActivity.this);
-            dinnerTask.execute("3", getYear, getMonth, getDay);
+            dinnerTask.execute("3", getYear, getMonth);
         } else if (type == 1) {
             ParseSchedule.ScheduleTask asyncTask = new ParseSchedule.ScheduleTask(MainActivity.this);
             asyncTask.execute(getYear, getMonth);

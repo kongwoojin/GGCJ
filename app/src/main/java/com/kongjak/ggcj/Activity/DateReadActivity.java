@@ -91,10 +91,10 @@ public class DateReadActivity extends AppCompatActivity
 
     public void getMeal() {
         ParseMeal.WeekMealTask lunchTask = new ParseMeal.WeekMealTask(DateReadActivity.this);
-        lunchTask.execute("2", year, month, dayOfMonth);
+        lunchTask.execute("2", year, month);
 
         ParseMeal.WeekMealTask dinnerTask = new ParseMeal.WeekMealTask(DateReadActivity.this);
-        dinnerTask.execute("3", year, month, dayOfMonth);
+        dinnerTask.execute("3", year, month);
     }
 
     public void getSchedule() {

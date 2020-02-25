@@ -57,7 +57,6 @@
     <string name="notice_parents_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=030100&amp;master=bbs&amp;act=list&amp;master_sid=18&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="gallery_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050800&amp;master=bbs&amp;act=list&amp;master_sid=35&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="gallery_url_filter" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050800&amp;master=bbs&amp;act=list&amp;master_sid=35&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=</string>
-    <string name="neis_meal" translatable="false">https://%1$s.goe.go.kr/sts_sci_md01_001.do?schulCode=%2$s&amp;schulCrseScCode=%3$s&amp;schulKndScCode=0%3$s&amp;schMmealScCode=%4$s&amp;schYmd=%5$s.%6$s.%7$s</string>
     <string name="neis_schedule" translatable="false">https://%1$s.goe.go.kr/sts_sci_sf01_001.do?schulCode=%2$s&amp;schulCrseScCode=%3$s&amp;schulKndScCode=0%3$s&amp;ay=%4$s&amp;mm=%5$s</string>
 
     <!-- Info -->
@@ -81,4 +80,9 @@
         Just select any date!</string>
     <string name="intro_3_title">School Notices</string>
     <string name="intro_3_desc">Now see all school notices in GGCJ App!</string>
+
+    <!-- Open API -->
+    <string name="api_region_code" translatable="false">J10</string>
+    <string name="api_school_code" translatable="false">7530937</string>
+    <string name="api_key" translatable="false">KEY</string>
 </resources>
