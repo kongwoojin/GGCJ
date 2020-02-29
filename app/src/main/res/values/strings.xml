@@ -57,7 +57,7 @@
     <string name="notice_parents_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=030100&amp;master=bbs&amp;act=list&amp;master_sid=18&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="gallery_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050800&amp;master=bbs&amp;act=list&amp;master_sid=35&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="gallery_url_filter" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050800&amp;master=bbs&amp;act=list&amp;master_sid=35&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=</string>
-    <string name="neis_schedule" translatable="false">https://%1$s.goe.go.kr/sts_sci_sf01_001.do?schulCode=%2$s&amp;schulCrseScCode=%3$s&amp;schulKndScCode=0%3$s&amp;ay=%4$s&amp;mm=%5$s</string>
+    <string name="neis_schedule" translatable="false">https://stu.%1$s.go.kr/sts_sci_sf01_001.do?schulCode=%2$s&amp;schulCrseScCode=%3$s&amp;schulKndScCode=0%3$s&amp;ay=%4$s&amp;mm=%5$s</string>
 
     <!-- Info -->
     <string name="info_title">Info</string>

@@ -60,7 +60,7 @@ public class ParseSchedule {
             String month = params[1];
 
             Document doc;
-            String schedule_url = String.format(context.getString(R.string.neis_schedule), "stu", school_code, school_type, year, month);
+            String schedule_url = String.format(context.getString(R.string.neis_schedule), "goe", school_code, school_type, year, month);
             try {
                 doc = Jsoup.connect(schedule_url).get();
                 Elements scheduleAll = doc.select("#contents > div:nth-child(2) > table > tbody > tr");
