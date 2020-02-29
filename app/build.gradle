@@ -33,7 +33,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.browser:browser:1.2.0'
-    implementation 'org.jsoup:jsoup:1.12.2'
+    implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
