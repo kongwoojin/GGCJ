@@ -362,7 +362,12 @@ public class NoticeActivity extends AppCompatActivity
         @Override
         protected void onProgressUpdate(String... params) { // Receive from doInBackground
             double last_notice_num;
-            parsed.add(new Notices(params[0], params[1], params[2], params[3])); // Add values to array list
+            boolean isImportant = false;
+            if (params[4].equals("공지")) {
+                isImportant = true;
+            }
+
+            parsed.add(new Notices(params[0], params[1], params[2], params[3], isImportant)); // Add values to array list
             Log.d("Parse", params[3]);
             if (page == 1 && !params[4].equals("공지")) {
                 last_notice_num = Integer.parseInt(params[4]);

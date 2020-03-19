@@ -32,12 +32,21 @@ public class NoticeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         MyViewHolder myViewHolder = (MyViewHolder) holder;
+        String title;
 
         final Notices data = NoticeArrayList.get(position);
 
-        myViewHolder.title.setText(NoticeArrayList.get(position).title);
+        if (NoticeArrayList.get(position).isImportant) {
+            title = myViewHolder.itemView.getResources().getString(R.string.important_notice) + NoticeArrayList.get(position).title;
+        } else {
+            title = NoticeArrayList.get(position).title;
+        }
+
+        myViewHolder.title.setText(title);
         myViewHolder.writer.setText(NoticeArrayList.get(position).writer);
         myViewHolder.date.setText(NoticeArrayList.get(position).date);
+
+
 
         myViewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override

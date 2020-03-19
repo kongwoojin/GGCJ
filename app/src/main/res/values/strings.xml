@@ -51,6 +51,7 @@
     <string name="last_page">Last Page!</string>
     <string name="warning">Warning!</string>
     <string name="table_warning">This post include table!\nDeveloper recommend see this post on website.</string>
+    <string name="important_notice">[Important]&#160;</string>
 
     <!-- URLs -->
     <string name="notice_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050100&amp;master=bbs&amp;act=list&amp;master_sid=30&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
