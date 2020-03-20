@@ -6,23 +6,24 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.browser.customtabs.CustomTabsIntent;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.kongjak.ggcj.R;
 import com.kongjak.ggcj.Tools.NoticeAdapter;
 import com.kongjak.ggcj.Tools.Notices;
@@ -371,7 +372,7 @@ public class NoticeActivity extends AppCompatActivity
             Log.d("Parse", params[3]);
             if (page == 1 && !params[4].equals("공지")) {
                 last_notice_num = Integer.parseInt(params[4]);
-                last_page = (int) Math.ceil((last_notice_num + 14)/15); // Get last page number
+                last_page = (int) Math.ceil((last_notice_num + 14) / 15); // Get last page number
                 Log.d("GGCJ", String.valueOf(last_page));
             }
         }

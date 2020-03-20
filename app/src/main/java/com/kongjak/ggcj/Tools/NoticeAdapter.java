@@ -1,12 +1,13 @@
 package com.kongjak.ggcj.Tools;
 
 import android.content.Intent;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.kongjak.ggcj.Activity.NoticeReadActivity;
 import com.kongjak.ggcj.R;
@@ -45,7 +46,6 @@ public class NoticeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         myViewHolder.title.setText(title);
         myViewHolder.writer.setText(NoticeArrayList.get(position).writer);
         myViewHolder.date.setText(NoticeArrayList.get(position).date);
-
 
 
         myViewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
