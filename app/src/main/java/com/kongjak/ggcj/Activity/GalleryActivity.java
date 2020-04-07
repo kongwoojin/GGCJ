@@ -307,9 +307,10 @@ public class GalleryActivity extends AppCompatActivity
                 list = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul > li"); // Get notice list
                 last_page_url = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsPage > a:nth-child(14)");
                 if (page == 1)
-                    last_page = Integer.parseInt(last_page_url.attr("abs:href").replace(getResources().getString(R.string.gallery_url_filter), ""));
+                    last_page = Integer.parseInt(last_page_url.attr("abs:href").replaceAll("(.*)Page=", ""));
                 count = list.size(); // Count notice!
 
+                Log.d("Parse", "GGCJ" + String.valueOf(last_page));
                 Log.d("Parse", "Count" + String.valueOf(count));
 
                 for (int i = 1; i <= count; i++) { // loop

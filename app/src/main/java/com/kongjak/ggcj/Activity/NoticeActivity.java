@@ -299,6 +299,7 @@ public class NoticeActivity extends AppCompatActivity
         private Elements date;
         private Elements url;
         private Elements numoflist;
+        private Elements last_page_url;
         private int count;
 
         @Override
@@ -335,8 +336,12 @@ public class NoticeActivity extends AppCompatActivity
                 Document doc = Jsoup.connect(notice_url).get();
                 root = doc.select("#bbsWrap > form > div.bbsContent > table > tbody"); // Get root view
                 list = doc.select("#bbsWrap > form > div.bbsContent > table > tbody > tr"); // Get notice list
+                last_page_url = doc.select("#bbsWrap > form > div.bbsPage > li:nth-child(14) > a");
+                if (page == 1)
+                    last_page = Integer.parseInt(last_page_url.attr("abs:href").replaceAll("(.*)Page=", ""));
                 count = list.size(); // Count notice!
 
+                Log.d("Parse", "GGCJ" + String.valueOf(last_page));
                 Log.d("Parse", "Count" + String.valueOf(count));
 
                 for (int i = 1; i <= count; i++) { // loop
@@ -362,7 +367,6 @@ public class NoticeActivity extends AppCompatActivity
 
         @Override
         protected void onProgressUpdate(String... params) { // Receive from doInBackground
-            double last_notice_num;
             boolean isImportant = false;
             if (params[4].equals("공지")) {
                 isImportant = true;
@@ -370,11 +374,6 @@ public class NoticeActivity extends AppCompatActivity
 
             parsed.add(new Notices(params[0], params[1], params[2], params[3], isImportant)); // Add values to array list
             Log.d("Parse", params[3]);
-            if (page == 1 && !params[4].equals("공지")) {
-                last_notice_num = Integer.parseInt(params[4]);
-                last_page = (int) Math.ceil((last_notice_num + 14) / 15); // Get last page number
-                Log.d("GGCJ", String.valueOf(last_page));
-            }
         }
     }
 }

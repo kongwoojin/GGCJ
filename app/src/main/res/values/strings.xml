@@ -57,8 +57,7 @@
     <string name="notice_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050100&amp;master=bbs&amp;act=list&amp;master_sid=30&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="notice_parents_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=030100&amp;master=bbs&amp;act=list&amp;master_sid=18&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
     <string name="gallery_url" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050800&amp;master=bbs&amp;act=list&amp;master_sid=35&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=%1$d</string>
-    <string name="gallery_url_filter" translatable="false">http://ggcj.hs.kr/main.php?menugrp=050800&amp;master=bbs&amp;act=list&amp;master_sid=35&amp;SearchCategory=&amp;SearchColumn=&amp;SearchValue=&amp;Page=</string>
-
+    
     <!-- Info -->
     <string name="info_title">Info</string>
     <string name="opensource">Open Source</string>
