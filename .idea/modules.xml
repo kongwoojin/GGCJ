@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android-GGCJ.iml" filepath="$PROJECT_DIR$/Android-GGCJ.iml" group="GGCJ" />
-      <module fileurl="file://$PROJECT_DIR$/GGCJ.iml" filepath="$PROJECT_DIR$/GGCJ.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/GGCJ-app.iml" filepath="$PROJECT_DIR$/app/GGCJ-app.iml" group="GGCJ/app" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GGCJ.iml" filepath="$PROJECT_DIR$/.idea/modules/GGCJ.iml" group="GGCJ" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="GGCJ/app" />
     </modules>
   </component>
 </project>
