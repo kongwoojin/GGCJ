@@ -1,9 +1,11 @@
 package com.kongjak.ggcj.Activity
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.Preference.OnPreferenceClickListener
 import android.preference.PreferenceFragment
+import android.widget.Toast
 import com.kongjak.ggcj.R
 import de.psdev.licensesdialog.LicensesDialog
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20
@@ -27,7 +29,17 @@ class InfoPreference : PreferenceFragment() {
                     .setIncludeOwnLicense(true)
                     .build()
                     .show()
+        } else if ("deleteData" == getKey) {
+            val lunch_sp = preference.context.getSharedPreferences("lunch", MODE_PRIVATE)
+            lunch_sp.edit().clear().apply()
+
+            val dinner_sp = preference.context.getSharedPreferences("dinner", MODE_PRIVATE)
+            dinner_sp.edit().clear().apply()
+
+            val schedule_sp = preference.context.getSharedPreferences("schedule", MODE_PRIVATE)
+            schedule_sp.edit().clear().apply()
         }
+
         true
     }
 
@@ -35,6 +47,7 @@ class InfoPreference : PreferenceFragment() {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.info)
         setOnPreferenceClick(findPreference("allSource"))
+        setOnPreferenceClick(findPreference("deleteData"))
     }
 
     private fun setOnPreferenceClick(mPreference: Preference) {

@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        checkFirstRun()
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -65,17 +64,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val day = SimpleDateFormat("dd", Locale.KOREA)
         getDay = check(day.format(date))
         setView()
-    }
-
-    private fun checkFirstRun() {
-        val sp = getSharedPreferences("AppIntro", Context.MODE_PRIVATE)
-        if (!sp.getBoolean("first", false)) {
-            val editor = sp.edit()
-            editor.putBoolean("first", true)
-            editor.apply()
-            val intent = Intent(this, IntroActivity::class.java) // Call the AppIntro java class
-            startActivity(intent)
-        }
     }
 
     private fun setView() {
@@ -269,12 +257,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onPause()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onRestart() {
+        super.onRestart()
         nav_view.setCheckedItem(R.id.nav_home)
-        Log.d("GGCJ", "Resume")
-        setMealView()
-        setScheduleView()
+        Log.d("GGCJ", "Restart")
+        checkMeal()
+        checkSchedule()
     }
 
     override fun onDestroy() {

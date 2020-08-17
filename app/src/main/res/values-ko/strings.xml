@@ -52,6 +52,7 @@
     <!-- Info -->
     <string name="info_title">안내</string>
     <string name="opensource">오픈소스</string>
+    <string name="info_app">앱</string>
     <string name="github">Github</string>
     <string name="my_github">개발자 Github</string>
     <string name="ggcj_code">소스코드</string>
@@ -60,6 +61,8 @@
     <string name="license_check">오픈소스 라이선스 확인</string>
     <string name="developer">개발자</string>
     <string name="developer_name">공우진 (Kongjak)</string>
+    <string name="delete_data_title">데이터 삭제</string>
+    <string name="delete_data_summary">급식과 학사일정 데이터를 삭제합니다</string>
 
     <!-- Intro -->
     <string name="intro_1_title">환영합니다!</string>
