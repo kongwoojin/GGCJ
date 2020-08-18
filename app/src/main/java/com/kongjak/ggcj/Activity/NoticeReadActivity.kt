@@ -19,7 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.FileAdapter
 import com.kongjak.ggcj.Tools.Files
+import kotlinx.android.synthetic.main.content_notice.*
 import kotlinx.android.synthetic.main.content_notice_read.*
+import kotlinx.android.synthetic.main.content_notice_read.loadingProgress
+import kotlinx.android.synthetic.main.content_notice_read.recycleView
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 import java.io.IOException
@@ -75,8 +78,6 @@ class NoticeReadActivity : AppCompatActivity() {
     }
 
     private inner class MainPageTask : AsyncTask<String, String, Void?>() {
-        var asyncDialog = ProgressDialog(
-                this@NoticeReadActivity)
         private var count = 0
         private var contentsValue: String? = null
         override fun onPostExecute(result: Void?) {
@@ -88,7 +89,7 @@ class NoticeReadActivity : AppCompatActivity() {
             writer.text = writertxt
             date.text = dateTxt
             if (TextUtils.isEmpty(contentsTxt)) contents.text = "내용이 없습니다." else contents.text = contentsTxt
-            asyncDialog.dismiss()
+            loadingProgress.visibility = View.GONE
             if (table_count != "0") {
                 val builder = AlertDialog.Builder(this@NoticeReadActivity)
                 builder.setTitle(getString(R.string.warning))
@@ -100,11 +101,7 @@ class NoticeReadActivity : AppCompatActivity() {
         }
 
         override fun onPreExecute() {
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            asyncDialog.setMessage("로딩중입니다..")
-
-            // show dialog
-            asyncDialog.show()
+            loadingProgress.visibility = View.VISIBLE
             super.onPreExecute()
         }
 
@@ -147,23 +144,17 @@ class NoticeReadActivity : AppCompatActivity() {
 
     private inner class FileTask : AsyncTask<String, String, Void?>() {
         var file_parsed = ArrayList<Files>()
-        var asyncDialog = ProgressDialog(
-                this@NoticeReadActivity)
         override fun onPostExecute(result: Void?) {
             val FileAdapter = ArrayList<Files>()
             val myAdapter = FileAdapter(FileAdapter)
             recycleView.adapter = myAdapter
             FileAdapter.addAll(file_parsed) // Add parsed's values to Real array list
-            asyncDialog.dismiss()
+            loadingProgress.visibility = View.GONE
             super.onPostExecute(result)
         }
 
         override fun onPreExecute() {
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            asyncDialog.setMessage("로딩중입니다..")
-
-            // show dialog
-            asyncDialog.show()
+            loadingProgress.visibility = View.VISIBLE
             super.onPreExecute()
         }
 

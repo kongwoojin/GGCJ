@@ -1,6 +1,5 @@
 package com.kongjak.ggcj.Tools
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,22 +14,13 @@ import java.util.*
 
 class ParseMeal {
     class WeekMealTask(var context: Context) : AsyncTask<String?, String?, Void?>() {
-        var asyncDialog: ProgressDialog? = null
         override fun onPostExecute(result: Void?) {
             val intent = Intent("MealParseEnd")
             context.sendBroadcast(intent)
-            asyncDialog!!.dismiss()
             super.onPostExecute(result)
         }
 
         override fun onPreExecute() {
-            asyncDialog = ProgressDialog(context)
-            val loading = context.getString(R.string.loading)
-            asyncDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            asyncDialog!!.setMessage(loading)
-
-            // show dialog
-            asyncDialog!!.show()
             super.onPreExecute()
         }
 

@@ -25,7 +25,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.Gallery
 import com.kongjak.ggcj.Tools.GalleryAdapter
+import kotlinx.android.synthetic.main.content_date_read.*
 import kotlinx.android.synthetic.main.content_gallery.*
+import kotlinx.android.synthetic.main.content_gallery.loadingProgress
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
@@ -218,26 +220,19 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     private inner class MainPageTask : AsyncTask<String?, Any?, Void?>() {
         var parsed = ArrayList<Gallery>()
-        var asyncDialog = ProgressDialog(
-                this@GalleryActivity)
         override fun onPostExecute(result: Void?) {
             Log.d("Parse", "End")
             val GalleryArrayList = ArrayList<Gallery>()
             val myAdapter = GalleryAdapter(GalleryArrayList)
             recycleView.adapter = myAdapter
             GalleryArrayList.addAll(parsed) // Add parsed's values to Real array list
-            asyncDialog.dismiss()
+            loadingProgress.visibility = View.GONE
             checkFabHide()
             super.onPostExecute(result)
         }
 
         override fun onPreExecute() {
-            val loading = getString(R.string.loading)
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            asyncDialog.setMessage(loading)
-
-            // show dialog
-            asyncDialog.show()
+            loadingProgress.visibility = View.VISIBLE
             super.onPreExecute()
         }
 

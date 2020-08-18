@@ -21,7 +21,12 @@ import com.kongjak.ggcj.Tools.ParseMeal.WeekMealTask
 import com.kongjak.ggcj.Tools.ParseSchedule.ScheduleTask
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_date_read.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.content_main.item_dinner
+import kotlinx.android.synthetic.main.content_main.item_lunch
+import kotlinx.android.synthetic.main.content_main.item_schedule
+import kotlinx.android.synthetic.main.content_main.loadingProgress
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var alertDialog: AlertDialog? = null
     private val mBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            loadingProgress.visibility = View.GONE
             if (intent.action == "MealParseEnd") {
                 setMealView()
             } else if (intent.action == "ScheduleParseEnd") {
@@ -202,6 +208,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun getDatas(type: Int) {
+        loadingProgress.visibility = View.VISIBLE
         if (type == 0) {
             val lunchTask = WeekMealTask(this@MainActivity)
             lunchTask.execute("2", getYear, getMonth)

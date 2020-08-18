@@ -25,7 +25,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.NoticeAdapter
 import com.kongjak.ggcj.Tools.Notices
+import kotlinx.android.synthetic.main.content_date_read.*
 import kotlinx.android.synthetic.main.content_notice.*
+import kotlinx.android.synthetic.main.content_notice.loadingProgress
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
@@ -243,8 +245,6 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     private inner class MainPageTask : AsyncTask<String?, String, Void?>() {
         var parsed = ArrayList<Notices>()
-        var asyncDialog = ProgressDialog(
-                this@NoticeActivity)
         private var count = 0
         override fun onPostExecute(result: Void?) {
             //doInBackground 작업이 끝나고 난뒤의 작업
@@ -253,18 +253,13 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             val myAdapter = NoticeAdapter(NoticeArrayList)
             recycleView.adapter = myAdapter
             NoticeArrayList.addAll(parsed) // Add parsed's values to Real array list
-            asyncDialog.dismiss()
+            loadingProgress.visibility = View.GONE
             checkFabHide()
             super.onPostExecute(result)
         }
 
         override fun onPreExecute() {
-            val loading = getString(R.string.loading)
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            asyncDialog.setMessage(loading)
-
-            // show dialog
-            asyncDialog.show()
+            loadingProgress.visibility = View.VISIBLE
             super.onPreExecute()
         }
 

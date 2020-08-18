@@ -67,6 +67,7 @@ class DateReadActivity : AppCompatActivity(), OnRefreshListener {
 
     private val meal: Unit
         get() {
+            loadingProgress.visibility = View.VISIBLE
             val lunchTask = WeekMealTask(this)
             lunchTask.execute("2", year, month)
             val dinnerTask = WeekMealTask(this)
@@ -75,6 +76,7 @@ class DateReadActivity : AppCompatActivity(), OnRefreshListener {
 
     private val schedule: Unit
         get() {
+            loadingProgress.visibility = View.VISIBLE
             val asyncTask = ScheduleTask(this)
             asyncTask.execute(year, month)
         }
@@ -93,6 +95,7 @@ class DateReadActivity : AppCompatActivity(), OnRefreshListener {
     private val mBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d("GGCJ", "Received ParseEnd")
+            loadingProgress.visibility = View.GONE
             setView()
         }
     }
