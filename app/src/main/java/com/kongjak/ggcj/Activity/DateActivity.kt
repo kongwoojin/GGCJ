@@ -6,15 +6,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.SaturdayDecorator
 import com.kongjak.ggcj.Tools.SundayDecorator
 import com.kongjak.ggcj.Tools.TodayDecorator
+import com.kongjak.ggcj.Tools.WeekDecorator
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
@@ -38,7 +37,11 @@ class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         calendarView.addDecorators(
                 SundayDecorator(),
                 SaturdayDecorator(),
-                TodayDecorator())
+                TodayDecorator()
+        )
+
+        calendarView.setLeftArrow(R.drawable.ic_date_left_black)
+        calendarView.setRightArrow(R.drawable.ic_date_right_black)
     }
 
     override fun onDateSelected(
