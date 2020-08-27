@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -105,6 +106,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         recycleView.setHasFixedSize(true)
         mLayoutManager = LinearLayoutManager(this)
         recycleView.layoutManager = mLayoutManager
+        recycleView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
         val asyncTask = MainPageTask()
         asyncTask.execute()
         recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

@@ -1,10 +1,10 @@
 package com.kongjak.ggcj.Activity
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -25,15 +25,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.Gallery
 import com.kongjak.ggcj.Tools.GalleryAdapter
-import kotlinx.android.synthetic.main.content_date_read.*
 import kotlinx.android.synthetic.main.content_gallery.*
-import kotlinx.android.synthetic.main.content_gallery.loadingProgress
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
 
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
-    private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var page = 1
     var last_page = 0
@@ -95,7 +92,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.setCheckedItem(R.id.nav_gallery)
         recycleView.setHasFixedSize(true)
-        mLayoutManager = LinearLayoutManager(this)
+        val mLayoutManager = GridLayoutManager(this, calculateNoOfColumns(200F))
         recycleView.layoutManager = mLayoutManager
         val asyncTask = MainPageTask()
         asyncTask.execute()
@@ -123,6 +120,13 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         prev!!.hide()
         next!!.hide()
     }
+
+    private fun calculateNoOfColumns(columnWidthDp: Float): Int {
+        val displayMetrics: DisplayMetrics = resources.displayMetrics
+        val screenWidthDp: Float = displayMetrics.widthPixels / displayMetrics.density
+        return (screenWidthDp / columnWidthDp + 0.5).toInt()
+    }
+
 
     fun reload() {
         val asyncTask = MainPageTask()

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,7 @@ class NoticeAdapter(private val NoticeArrayList: ArrayList<Notices>) : RecyclerV
         holder.title.text = title
         holder.writer.text = data.writer
         holder.date.text = data.date
-        holder.mCardView.setOnClickListener {
+        holder.rootView.setOnClickListener {
             val intent = Intent(it.context, NoticeReadActivity::class.java)
             intent.putExtra("url", data.url)
             it.context.startActivity(intent)
@@ -38,7 +39,7 @@ class NoticeAdapter(private val NoticeArrayList: ArrayList<Notices>) : RecyclerV
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mCardView = itemView.findViewById<CardView>(R.id.card_view)
+        val rootView = itemView.findViewById<RelativeLayout>(R.id.rootView)
         val title = itemView.findViewById<TextView>(R.id.item_title)
         val writer = itemView.findViewById<TextView>(R.id.item_writer)
         val date = itemView.findViewById<TextView>(R.id.item_date)
