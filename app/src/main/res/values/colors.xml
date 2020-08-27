@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#5d4037</color>
-    <color name="colorPrimaryDark">#5d4037</color>
+    <color name="colorPrimaryDark">#321911</color>
     <color name="colorAccent">#795548</color>
     <color name="colorControlNormal">#000000</color>
     <color name="mcv_text_date">#000000</color>
