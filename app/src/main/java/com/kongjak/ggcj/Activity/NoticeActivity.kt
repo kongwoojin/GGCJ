@@ -1,6 +1,5 @@
 package com.kongjak.ggcj.Activity
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
@@ -26,9 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.NoticeAdapter
 import com.kongjak.ggcj.Tools.Notices
-import kotlinx.android.synthetic.main.content_date_read.*
 import kotlinx.android.synthetic.main.content_notice.*
-import kotlinx.android.synthetic.main.content_notice.loadingProgress
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
@@ -78,7 +75,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         next = findViewById<View>(R.id.next) as FloatingActionButton
         next!!.setOnClickListener { view ->
             if (page != last_page) {
-                page = page + 1
+                page += 1
                 val asyncTask = MainPageTask()
                 asyncTask.execute()
             } else {
@@ -268,7 +265,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         override fun doInBackground(vararg params: String?): Void? {
             //백그라운드 작업이 진행되는 곳.
             val notice_url = String.format(parse_url, page)
-            Log.d("GGCJ",notice_url)
+            Log.d("GGCJ", notice_url)
             try {
                 Log.d("Parse", notice_url)
                 val doc = Jsoup.connect(notice_url).get()

@@ -1,7 +1,6 @@
 package com.kongjak.ggcj.Activity
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -19,12 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.FileAdapter
 import com.kongjak.ggcj.Tools.Files
-import kotlinx.android.synthetic.main.content_notice.*
 import kotlinx.android.synthetic.main.content_notice_read.*
-import kotlinx.android.synthetic.main.content_notice_read.loadingProgress
-import kotlinx.android.synthetic.main.content_notice_read.recycleView
 import org.jsoup.Jsoup
-import org.jsoup.select.Elements
 import java.io.IOException
 import java.util.*
 

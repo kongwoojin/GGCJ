@@ -13,7 +13,6 @@ import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.SaturdayDecorator
 import com.kongjak.ggcj.Tools.SundayDecorator
 import com.kongjak.ggcj.Tools.TodayDecorator
-import com.kongjak.ggcj.Tools.WeekDecorator
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener

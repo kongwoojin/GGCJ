@@ -1,6 +1,5 @@
 package com.kongjak.ggcj.Activity
 
-import android.app.ProgressDialog
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
@@ -21,12 +20,7 @@ import com.kongjak.ggcj.Tools.ParseMeal.WeekMealTask
 import com.kongjak.ggcj.Tools.ParseSchedule.ScheduleTask
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_date_read.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.content_main.item_dinner
-import kotlinx.android.synthetic.main.content_main.item_lunch
-import kotlinx.android.synthetic.main.content_main.item_schedule
-import kotlinx.android.synthetic.main.content_main.loadingProgress
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,6 +44,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -69,7 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         getMonth = check(month.format(date))
         val day = SimpleDateFormat("dd", Locale.KOREA)
         getDay = check(day.format(date))
-        setView()
+        checkFirstRun()
     }
 
     private fun setView() {
@@ -77,6 +72,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         checkMeal()
         checkSchedule()
     }
+
+    private fun checkFirstRun() {
+        val sp = getSharedPreferences("AppIntro", Context.MODE_PRIVATE)
+        if (!sp.getBoolean("first", false)) {
+            val intent = Intent(this, IntroActivity::class.java) // Call the AppIntro java class
+            startActivity(intent)
+        }
+    }
+
 
     private fun checkMeal() {
         val lunch_sp = getSharedPreferences("lunch", Context.MODE_PRIVATE)
@@ -153,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val url = "http://comci.kr/st"
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(this@MainActivity, Uri.parse(url))
+            customTabsIntent.launchUrl(this, Uri.parse(url))
         } else if (id == R.id.nav_send) {
             val email = Intent(Intent.ACTION_SENDTO)
             email.data = Uri.parse("mailto:")
@@ -187,7 +191,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val url = "http://ggcj.hs.kr"
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(this@MainActivity, Uri.parse(url))
+            customTabsIntent.launchUrl(this, Uri.parse(url))
         }
         return super.onOptionsItemSelected(item)
     }
@@ -195,7 +199,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun EmptyDialog(dataType: String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(String.format(getString(R.string.data_empty_dialog), dataType))
-        builder.setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface?, id: Int ->
+        builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
             if (dataType == getString(R.string.meal)) {
                 getDatas(0)
             } else if (dataType == getString(R.string.schedule)) {
@@ -210,30 +214,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun getDatas(type: Int) {
         loadingProgress.visibility = View.VISIBLE
         if (type == 0) {
-            val lunchTask = WeekMealTask(this@MainActivity)
+            val lunchTask = WeekMealTask(this)
             lunchTask.execute("2", getYear, getMonth)
-            val dinnerTask = WeekMealTask(this@MainActivity)
+            val dinnerTask = WeekMealTask(this)
             dinnerTask.execute("3", getYear, getMonth)
         } else if (type == 1) {
-            val asyncTask = ScheduleTask(this@MainActivity)
+            val asyncTask = ScheduleTask(this)
             asyncTask.execute(getYear, getMonth)
         }
     }
 
     // show dialog
     private val nextSchedule: Unit
-        private get() {
+        get() {
             val today = Calendar.getInstance(TimeZone.getDefault())[Calendar.DAY_OF_MONTH]
             val last_day = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)
-            val asyncDialog = ProgressDialog(
-                    this@MainActivity)
-            val loading = getString(R.string.loading)
-            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            asyncDialog.setMessage(loading)
-
-            // show dialog
-            asyncDialog.show()
-            Thread(Runnable {
+            loadingProgress.visibility = View.VISIBLE
+            Thread {
                 var nextSchedule: String? = null
                 var nextScheduleDay: String? = null
                 for (i in today + 1..last_day) {
@@ -256,20 +253,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         item_schedule.text = String.format(getString(R.string.next_schedule), finalNextSchedule, finalNextScheduleDay)
                     }
                 }
-            }).start()
-            asyncDialog.dismiss()
+            }.start()
+            loadingProgress.visibility = View.GONE
         }
 
     override fun onPause() {
         super.onPause()
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onResume() {
+        super.onResume()
         nav_view.setCheckedItem(R.id.nav_home)
-        Log.d("GGCJ", "Restart")
-        checkMeal()
-        checkSchedule()
+        Log.d("GGCJ", "onResume")
+        val sp = getSharedPreferences("AppIntro", Context.MODE_PRIVATE)
+        if (sp.getBoolean("first", false)) {
+            Log.d("GGCJ", "setView")
+            Log.d("GGCJ", sp.getBoolean("first", false).toString())
+            setView()
+        }
     }
 
     override fun onDestroy() {
