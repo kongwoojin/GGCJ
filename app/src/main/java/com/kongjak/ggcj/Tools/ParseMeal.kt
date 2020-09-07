@@ -20,10 +20,6 @@ class ParseMeal {
             super.onPostExecute(result)
         }
 
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
-
         override fun doInBackground(vararg params: String?): Void? {
             var meal_type: String? = null
             val year = params[1]

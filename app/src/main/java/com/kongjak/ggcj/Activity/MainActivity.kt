@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun checkMeal() {
         val lunch_sp = getSharedPreferences("lunch", Context.MODE_PRIVATE)
         val lunch_str = lunch_sp.getString(getDate, "")
-        if (!lunch_str!!.isEmpty()) {
+        if (lunch_str!!.isNotEmpty()) {
             setMealView()
         } else {
             EmptyDialog(getString(R.string.meal))
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val schedule_sp = getSharedPreferences("schedule", Context.MODE_PRIVATE)
         val schedule_str = schedule_sp.getString(getDate, "")
         item_schedule.visibility = View.VISIBLE
-        if (!schedule_str!!.isEmpty()) {
+        if (schedule_str!!.isNotEmpty()) {
             setScheduleView()
         } else {
             EmptyDialog(getString(R.string.schedule))
@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 getDatas(1)
             }
         }
-        builder.setNegativeButton(getString(R.string.cancel)) { dialog: DialogInterface, id: Int -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel)) { dialog: DialogInterface, _ -> dialog.dismiss() }
         alertDialog = builder.create()
         alertDialog!!.show()
     }
@@ -244,22 +244,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         break
                     }
                 }
-                val finalNextSchedule = nextSchedule
-                val finalNextScheduleDay = nextScheduleDay
                 runOnUiThread {
-                    if (finalNextSchedule == null || finalNextSchedule.isEmpty()) {
+                    if (nextSchedule == null || nextSchedule.isEmpty()) {
                         item_schedule.text = getString(R.string.no_next_schedule)
                     } else {
-                        item_schedule.text = String.format(getString(R.string.next_schedule), finalNextSchedule, finalNextScheduleDay)
+                        item_schedule.text = String.format(getString(R.string.next_schedule), nextSchedule, nextScheduleDay)
                     }
                 }
             }.start()
             loadingProgress.visibility = View.GONE
         }
 
-    override fun onPause() {
-        super.onPause()
-    }
 
     override fun onResume() {
         super.onResume()

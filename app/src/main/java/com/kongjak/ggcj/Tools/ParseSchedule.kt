@@ -20,10 +20,6 @@ class ParseSchedule {
             super.onPostExecute(result)
         }
 
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
-
         override fun doInBackground(vararg params: String?): Void? {
             val year = params[0]
             val month = params[1]

@@ -52,13 +52,13 @@ class DateReadActivity : AppCompatActivity(), OnRefreshListener {
         item_lunch.visibility = View.VISIBLE
         item_dinner.visibility = View.VISIBLE
         item_schedule.visibility = View.VISIBLE
-        if (!lunch_str!!.isEmpty()) {
+        if (lunch_str!!.isNotEmpty()) {
             item_lunch.text = lunch_str
             item_dinner.text = dinner_str
         } else {
             meal
         }
-        if (!schedule_str!!.isEmpty()) {
+        if (schedule_str!!.isNotEmpty()) {
             item_schedule.text = schedule_str
         } else {
             schedule
