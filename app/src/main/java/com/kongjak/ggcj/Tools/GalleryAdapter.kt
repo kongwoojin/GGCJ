@@ -18,10 +18,11 @@ class GalleryAdapter(private val GalleryArrayList: ArrayList<Gallery>) : Recycle
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = GalleryArrayList[position]
         Glide.with(holder.rootView)
-                .load(data.imageUrl)
+                .load(data.imageUrl.replace("&source=thumbnail", ""))
                 .placeholder(R.drawable.ic_thumbnail)
                 .centerCrop()
-                .override(200, 200)
+                .thumbnail(0.1f)
+                .error(R.drawable.ic_image_error)
                 .into(holder.thumbnail)
 
         holder.rootView.setOnClickListener {
