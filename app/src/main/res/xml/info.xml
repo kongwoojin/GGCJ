@@ -3,7 +3,7 @@
     android:key="setting"
     android:title="@string/info_title">
 
-    <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
+    <PreferenceCategory
         android:key="app"
         android:title="@string/info_app">
         <Preference
@@ -13,8 +13,7 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
-        android:title="@string/developer">
+    <PreferenceCategory android:title="@string/developer">
         <Preference
             android:summary="@string/developer_name"
             android:title="@string/developer">
@@ -31,7 +30,7 @@
         </Preference>
     </PreferenceCategory>
 
-    <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android"
+    <PreferenceCategory
         android:key="openSource"
         android:title="@string/opensource">
         <Preference
