@@ -2,7 +2,6 @@ package com.kongjak.ggcj.Activity
 
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -26,11 +25,18 @@ import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.NoticeAdapter
 import com.kongjak.ggcj.Tools.Notices
 import kotlinx.android.synthetic.main.content_notice.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
 
 class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
+    private lateinit var myAdapter: NoticeAdapter
+    private lateinit var NoticeArrayList: ArrayList<Notices>
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var page = 1
@@ -49,15 +55,14 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         setContentView(R.layout.activity_notice)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        if (intent.hasExtra("url")) parse_url = intent.getStringExtra("url" ).toString()
+        if (intent.hasExtra("url")) parse_url = intent.getStringExtra("url").toString()
         notice_type = intent.getIntExtra("type", 0)
         Log.d("URL", String.format(parse_url, page))
         prev = findViewById<View>(R.id.prev) as FloatingActionButton
         prev!!.setOnClickListener { view ->
             if (page > 1) {
                 page -= 1
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getList()
             } else {
                 Snackbar.make(view, getString(R.string.first_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -65,8 +70,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         prev!!.setOnLongClickListener { view ->
             if (page != 1) {
                 page = 1
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getList()
             } else {
                 Snackbar.make(view, getString(R.string.first_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -76,8 +80,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         next!!.setOnClickListener { view ->
             if (page != last_page) {
                 page += 1
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getList()
             } else {
                 Snackbar.make(view, getString(R.string.last_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -85,8 +88,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         next!!.setOnLongClickListener { view ->
             if (page != last_page) {
                 page = last_page
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getList()
             } else {
                 Snackbar.make(view, getString(R.string.last_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -104,8 +106,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         mLayoutManager = LinearLayoutManager(this)
         recycleView.layoutManager = mLayoutManager
         recycleView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
-        val asyncTask = MainPageTask()
-        asyncTask.execute()
+        getList()
         recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -125,6 +126,9 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 }
             }
         })
+        NoticeArrayList = ArrayList<Notices>()
+        myAdapter = NoticeAdapter(NoticeArrayList)
+        recycleView.adapter = myAdapter
         mSwipeRefreshLayout = findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         mSwipeRefreshLayout!!.setOnRefreshListener(this)
         prev!!.hide()
@@ -141,8 +145,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     fun reload() {
-        val asyncTask = MainPageTask()
-        asyncTask.execute()
+        getList()
         mSwipeRefreshLayout!!.isRefreshing = false
     }
 
@@ -242,30 +245,14 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         setNav()
     }
 
-    private inner class MainPageTask : AsyncTask<String?, String, Void?>() {
-        var parsed = ArrayList<Notices>()
-        private var count = 0
-        override fun onPostExecute(result: Void?) {
-            //doInBackground 작업이 끝나고 난뒤의 작업
-            Log.d("Parse", "End")
-            val NoticeArrayList = ArrayList<Notices>()
-            val myAdapter = NoticeAdapter(NoticeArrayList)
-            recycleView.adapter = myAdapter
-            NoticeArrayList.addAll(parsed) // Add parsed's values to Real array list
-            loadingProgress.visibility = View.GONE
-            checkFabHide()
-            super.onPostExecute(result)
-        }
-
-        override fun onPreExecute() {
-            loadingProgress.visibility = View.VISIBLE
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg params: String?): Void? {
-            //백그라운드 작업이 진행되는 곳.
-            val notice_url = String.format(parse_url, page)
-            Log.d("GGCJ", notice_url)
+    private fun getList() {
+        var count: Int
+        val notice_url = String.format(parse_url, page)
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                NoticeArrayList.clear()
+                loadingProgress.visibility = View.VISIBLE
+            }
             try {
                 Log.d("Parse", notice_url)
                 val doc = Jsoup.connect(notice_url).get()
@@ -283,7 +270,14 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                     val date = root.select("tr:nth-child($i) > td:nth-child(5)") // Get date
                     val url = root.select("tr:nth-child($i) > td.tit > a") // Get url (Elements)
                     val notice_href = url.attr("abs:href") // Parse REAL url(href)
-                    publishProgress(title.text(), writer.text(), date.text(), notice_href, numoflist.text()) // Send it!
+                    withContext(Main) {
+                        var isImportant = false
+                        if (numoflist.text() == "공지") {
+                            isImportant = true
+                        }
+                        NoticeArrayList.add(Notices(title.text(), writer.text(), date.text(), notice_href, isImportant))
+                        myAdapter.notifyDataSetChanged()
+                    }
                     Log.d("Parse", title.text())
                     Log.d("Parse", "Count: $i")
                     Log.d("Parse", url.toString())
@@ -293,16 +287,10 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             } catch (e: ClassCastException) {
                 e.printStackTrace()
             }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg params: String) { // Receive from doInBackground
-            var isImportant = false
-            if (params[4] == "공지") {
-                isImportant = true
+            withContext(Main) {
+                loadingProgress.visibility = View.GONE
+                checkFabHide()
             }
-            parsed.add(Notices(params[0], params[1], params[2], params[3], isImportant)) // Add values to array list
-            Log.d("Parse", params[3])
         }
     }
 }

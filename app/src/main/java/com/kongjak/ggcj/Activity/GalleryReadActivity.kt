@@ -2,14 +2,12 @@ package com.kongjak.ggcj.Activity
 
 import android.app.AlertDialog
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
@@ -19,18 +17,19 @@ import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.ImageFileAdapter
 import com.kongjak.ggcj.Tools.ImageFiles
 import kotlinx.android.synthetic.main.content_gallery_read.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import org.jsoup.select.Elements
 import java.io.IOException
 import java.util.*
 
 class GalleryReadActivity : AppCompatActivity() {
-    var titleTxt: String? = null
-    var writertxt: String? = null
-    var dateTxt: String? = null
-    var contentsTxt: String? = null
+    private lateinit var imageFileArray: ArrayList<ImageFiles>
+    private lateinit var myAdapter: ImageFileAdapter
     var parse_url: String? = null
-    var table_count: String? = null
     var mLayoutManager: RecyclerView.LayoutManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +42,11 @@ class GalleryReadActivity : AppCompatActivity() {
         recycleView.setHasFixedSize(true)
         mLayoutManager = LinearLayoutManager(this)
         recycleView.layoutManager = mLayoutManager
-        val asyncTask = MainPageTask()
-        asyncTask.execute()
-        val imageTask = ImageTask()
-        imageTask.execute()
+        imageFileArray = ArrayList<ImageFiles>()
+        myAdapter = ImageFileAdapter(imageFileArray)
+        recycleView.adapter = myAdapter
+        getContents()
+        getImageFile()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -73,37 +73,14 @@ class GalleryReadActivity : AppCompatActivity() {
         return true
     }
 
-    private inner class MainPageTask : AsyncTask<String, String, Void?>() {
-        private lateinit var contents: Elements
-        private var count = 0
-        private var contentsValue: String? = null
-        override fun onPostExecute(result: Void?) {
-            val title = findViewById<View>(R.id.item_title) as TextView
-            val writer = findViewById<View>(R.id.item_writer) as TextView
-            val date = findViewById<View>(R.id.item_date) as TextView
-            val contents = findViewById<View>(R.id.item_contents) as TextView
-            title.text = titleTxt
-            writer.text = writertxt
-            date.text = dateTxt
-            if (TextUtils.isEmpty(contentsTxt)) contents.text = "내용이 없습니다." else contents.text = contentsTxt
-            loadingProgress.visibility = View.GONE
-            if (table_count != "0") {
-                val builder = AlertDialog.Builder(this@GalleryReadActivity)
-                builder.setTitle(getString(R.string.warning))
-                builder.setMessage(getString(R.string.table_warning))
-                builder.setPositiveButton(getString(R.string.ok), null)
-                builder.show()
+    private fun getContents() {
+        var count: Int
+        var contentsValue = ""
+
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                loadingProgress.visibility = View.VISIBLE
             }
-            super.onPostExecute(result)
-        }
-
-        override fun onPreExecute() {
-            loadingProgress.visibility = View.VISIBLE
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg params: String): Void? {
-            //백그라운드 작업이 진행되는 곳.
             try {
                 val doc = Jsoup.connect(parse_url).get()
                 val root = doc.select("#bbsWrap > div.bbsContent > table > tbody") // Get root view
@@ -115,10 +92,23 @@ class GalleryReadActivity : AppCompatActivity() {
                 count = contentsroot.size // Count!
                 Log.d("Parse", count.toString())
                 for (i in 1..count) { // loop
-                    contents = root.select("tr:nth-child(5) > td > p:nth-child($i)") // Get contents
+                    val contents = root.select("tr:nth-child(5) > td > p:nth-child($i)") // Get contents
                     contentsValue = if (TextUtils.isEmpty(contentsValue)) contents.text() else "$contentsValue \n ${contents.text()}"
                 }
-                publishProgress(title.text(), writer.text(), date.text(), contentsValue, tables.size.toString()) // Send it!
+                withContext(Main) {
+                    item_title.text = title.text()
+                    item_writer.text = writer.text()
+                    item_date.text = date.text()
+                    if (TextUtils.isEmpty(contentsValue)) item_contents.text = "내용이 없습니다." else item_contents.text = contentsValue
+                    loadingProgress.visibility = View.GONE
+                    if (tables.size.toString() != "0") {
+                        val builder = AlertDialog.Builder(this@GalleryReadActivity)
+                        builder.setTitle(getString(R.string.warning))
+                        builder.setMessage(getString(R.string.table_warning))
+                        builder.setPositiveButton(getString(R.string.ok), null)
+                        builder.show()
+                    }
+                }
                 Log.d("Parse", title.text())
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -126,36 +116,18 @@ class GalleryReadActivity : AppCompatActivity() {
                 e.printStackTrace()
                 Log.e("Parse", e.toString())
             }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg params: String) { // Receive from doInBackground
-            titleTxt = params[0]
-            writertxt = params[1]
-            dateTxt = params[2]
-            contentsTxt = params[3]
-            table_count = params[4]
+            withContext(Main) {
+                loadingProgress.visibility = View.GONE
+            }
         }
     }
 
-    private inner class ImageTask : AsyncTask<String, Any, Void?>() {
-        var file_parsed = ArrayList<ImageFiles>()
-        override fun onPostExecute(result: Void?) {
-            val ImageFileAdapter = ArrayList<ImageFiles>()
-            val myAdapter = ImageFileAdapter(ImageFileAdapter)
-            recycleView.adapter = myAdapter
-            ImageFileAdapter.addAll(file_parsed) // Add parsed's values to Real array list
-            loadingProgress.visibility = View.GONE
-            super.onPostExecute(result)
-        }
 
-        override fun onPreExecute() {
-            loadingProgress.visibility = View.VISIBLE
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg params: String): Void? {
-            //백그라운드 작업이 진행되는 곳.
+    private fun getImageFile() {
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                loadingProgress.visibility = View.VISIBLE
+            }
             try {
                 val doc = Jsoup.connect(parse_url).get()
                 val root = doc.select("#bbsWrap > div.bbsContent > table > tbody") // Get root view
@@ -166,7 +138,11 @@ class GalleryReadActivity : AppCompatActivity() {
                     val dl = root.select("tr:nth-child($i) > td > a") // Get dl url
                     val dl_href = dl.attr("abs:href") // Parse REAL url(href)
                     val img = root.select("tr:nth-child($i) > td > img")
-                    publishProgress(dl.text(), dl_href, img.size) // Send it!
+                    withContext(Main) {
+                        val isImageAvailable: Boolean = img.size != 0
+                        imageFileArray.add(ImageFiles(dl.text(), dl_href, isImageAvailable))
+                        myAdapter.notifyDataSetChanged()
+                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -174,17 +150,9 @@ class GalleryReadActivity : AppCompatActivity() {
                 e.printStackTrace()
                 Log.e("Parse", e.toString())
             }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg params: Any) { // Receive from doInBackground
-            val title = params[0] as String
-            val url = params[1] as String
-            val img_tag = params[2] as Int
-            println(img_tag)
-            val isImageAvailable: Boolean
-            isImageAvailable = if (img_tag == 0) false else true
-            file_parsed.add(ImageFiles(title, url, isImageAvailable))
+            withContext(Main) {
+                loadingProgress.visibility = View.GONE
+            }
         }
     }
 }

@@ -2,7 +2,6 @@ package com.kongjak.ggcj.Activity
 
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -26,11 +25,18 @@ import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.Gallery
 import com.kongjak.ggcj.Tools.GalleryAdapter
 import kotlinx.android.synthetic.main.content_gallery.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
 
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
+    private lateinit var myAdapter: GalleryAdapter
+    private lateinit var GalleryArrayList: ArrayList<Gallery>
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var page = 1
     var last_page = 0
@@ -47,8 +53,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         prev!!.setOnClickListener { view ->
             if (page > 1) {
                 page = page - 1
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getImageList()
             } else {
                 Snackbar.make(view, getString(R.string.first_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -56,8 +61,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         prev!!.setOnLongClickListener { view ->
             if (page != 1) {
                 page = 1
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getImageList()
             } else {
                 Snackbar.make(view, getString(R.string.first_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -67,8 +71,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         next!!.setOnClickListener { view ->
             if (page != last_page) {
                 page = page + 1
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getImageList()
             } else {
                 Snackbar.make(view, getString(R.string.last_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -76,8 +79,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         next!!.setOnLongClickListener { view ->
             if (page != last_page) {
                 page = last_page
-                val asyncTask = MainPageTask()
-                asyncTask.execute()
+                getImageList()
             } else {
                 Snackbar.make(view, getString(R.string.last_page), Snackbar.LENGTH_SHORT).show()
             }
@@ -94,8 +96,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         recycleView.setHasFixedSize(true)
         val mLayoutManager = GridLayoutManager(this, calculateNoOfColumns(200F))
         recycleView.layoutManager = mLayoutManager
-        val asyncTask = MainPageTask()
-        asyncTask.execute()
+        getImageList()
         recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -115,6 +116,9 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 }
             }
         })
+        GalleryArrayList = ArrayList<Gallery>()
+        myAdapter = GalleryAdapter(GalleryArrayList)
+        recycleView.adapter = myAdapter
         mSwipeRefreshLayout = findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         mSwipeRefreshLayout!!.setOnRefreshListener(this)
         prev!!.hide()
@@ -129,8 +133,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
 
     fun reload() {
-        val asyncTask = MainPageTask()
-        asyncTask.execute()
+        getImageList()
         mSwipeRefreshLayout!!.isRefreshing = false
     }
 
@@ -222,27 +225,13 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         return true
     }
 
-    private inner class MainPageTask : AsyncTask<String?, Any?, Void?>() {
-        var parsed = ArrayList<Gallery>()
-        override fun onPostExecute(result: Void?) {
-            Log.d("Parse", "End")
-            val GalleryArrayList = ArrayList<Gallery>()
-            val myAdapter = GalleryAdapter(GalleryArrayList)
-            recycleView.adapter = myAdapter
-            GalleryArrayList.addAll(parsed) // Add parsed's values to Real array list
-            loadingProgress.visibility = View.GONE
-            checkFabHide()
-            super.onPostExecute(result)
-        }
-
-        override fun onPreExecute() {
-            loadingProgress.visibility = View.VISIBLE
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg params: String?): Void? {
-            //백그라운드 작업이 진행되는 곳.
-            val notice_url = String.format(parse_url!!, page)
+    private fun getImageList() {
+        val notice_url = String.format(parse_url!!, page)
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                GalleryArrayList.clear()
+                loadingProgress.visibility = View.VISIBLE
+            }
             try {
                 Log.d("Parse", notice_url)
                 val doc = Jsoup.connect(notice_url).get()
@@ -261,21 +250,20 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     Log.d("Parse", title.text())
                     Log.d("Parse", "http://ggcj.hs.kr/main.php" + imageUrl.attr("src"))
                     Log.d("Parse", url.attr("abs:href"))
-                    publishProgress(title.text(), url.attr("abs:href"), full_image_url)
+                    withContext(Main) {
+                        GalleryArrayList.add(Gallery(title.text(), url.attr("abs:href"), full_image_url))
+                        myAdapter.notifyDataSetChanged()
+                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: ClassCastException) {
                 e.printStackTrace()
             }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg params: Any?) { // Receive from doInBackground
-            val title = params[0] as String
-            val url = params[1] as String
-            val image_url = params[2] as String
-            parsed.add(Gallery(title, url, image_url))
+            withContext(Main) {
+                loadingProgress.visibility = View.GONE
+                checkFabHide()
+            }
         }
     }
 }

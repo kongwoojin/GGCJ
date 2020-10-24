@@ -2,35 +2,33 @@ package com.kongjak.ggcj.Activity
 
 import android.app.AlertDialog
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.FileAdapter
 import com.kongjak.ggcj.Tools.Files
 import kotlinx.android.synthetic.main.content_notice_read.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
 
 class NoticeReadActivity : AppCompatActivity() {
-    var titleTxt: String? = null
-    var writertxt: String? = null
-    var dateTxt: String? = null
-    var contentsTxt: String? = null
+    private lateinit var fileArray: ArrayList<Files>
+    private lateinit var myAdapter: FileAdapter
     var parse_url: String? = null
-    var table_count: String? = null
-    var mLayoutManager: RecyclerView.LayoutManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notice_read)
@@ -40,12 +38,13 @@ class NoticeReadActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         parse_url = intent.getStringExtra("url")
         recycleView.setHasFixedSize(true)
-        mLayoutManager = LinearLayoutManager(this)
-        recycleView.setLayoutManager(mLayoutManager)
-        val asyncTask = MainPageTask()
-        asyncTask.execute()
-        val fileTask = FileTask()
-        fileTask.execute()
+        val mLayoutManager = LinearLayoutManager(this)
+        recycleView.layoutManager = mLayoutManager
+        fileArray = ArrayList<Files>()
+        myAdapter = FileAdapter(fileArray)
+        recycleView.adapter = myAdapter
+        readContents()
+        getFile()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -72,36 +71,14 @@ class NoticeReadActivity : AppCompatActivity() {
         return true
     }
 
-    private inner class MainPageTask : AsyncTask<String, String, Void?>() {
-        private var count = 0
-        private var contentsValue: String = ""
-        override fun onPostExecute(result: Void?) {
-            val title = findViewById<View>(R.id.item_title) as TextView
-            val writer = findViewById<View>(R.id.item_writer) as TextView
-            val date = findViewById<View>(R.id.item_date) as TextView
-            val contents = findViewById<View>(R.id.item_contents) as TextView
-            title.text = titleTxt
-            writer.text = writertxt
-            date.text = dateTxt
-            if (TextUtils.isEmpty(contentsTxt)) contents.text = "내용이 없습니다." else contents.text = contentsTxt
-            loadingProgress.visibility = View.GONE
-            if (table_count != "0") {
-                val builder = AlertDialog.Builder(this@NoticeReadActivity)
-                builder.setTitle(getString(R.string.warning))
-                builder.setMessage(getString(R.string.table_warning))
-                builder.setPositiveButton(getString(R.string.ok), null)
-                builder.show()
+    private fun readContents() {
+        var count: Int
+        var contentsValue = ""
+
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                loadingProgress.visibility = View.VISIBLE
             }
-            super.onPostExecute(result)
-        }
-
-        override fun onPreExecute() {
-            loadingProgress.visibility = View.VISIBLE
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg params: String): Void? {
-            //백그라운드 작업이 진행되는 곳.
             try {
                 val doc = Jsoup.connect(parse_url).get()
                 val root = doc.select("#bbsWrap > div.bbsContent > table > tbody") // Get root view
@@ -117,7 +94,20 @@ class NoticeReadActivity : AppCompatActivity() {
                     contentsValue = if (TextUtils.isEmpty(contentsValue)) contents.text() else "$contentsValue \n ${contents.text()}"
                     Log.d("GGCJ", contentsValue)
                 }
-                publishProgress(title.text(), writer.text(), date.text(), contentsValue, tables.size.toString()) // Send it!
+                withContext(Main) {
+                    item_title.text = title.text()
+                    item_writer.text = writer.text()
+                    item_date.text = date.text()
+                    if (TextUtils.isEmpty(contentsValue)) item_contents.text = "내용이 없습니다." else item_contents.text = contentsValue
+                    loadingProgress.visibility = View.GONE
+                    if (tables.size.toString() != "0") {
+                        val builder = AlertDialog.Builder(this@NoticeReadActivity)
+                        builder.setTitle(getString(R.string.warning))
+                        builder.setMessage(getString(R.string.table_warning))
+                        builder.setPositiveButton(getString(R.string.ok), null)
+                        builder.show()
+                    }
+                }
                 Log.d("Parse", title.text())
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -125,35 +115,17 @@ class NoticeReadActivity : AppCompatActivity() {
                 e.printStackTrace()
                 Log.e("Parse", e.toString())
             }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg params: String) { // Receive from doInBackground
-            titleTxt = params[0]
-            writertxt = params[1]
-            dateTxt = params[2]
-            contentsTxt = params[3]
-            table_count = params[4]
+            withContext(Main) {
+                loadingProgress.visibility = View.GONE
+            }
         }
     }
 
-    private inner class FileTask : AsyncTask<String, String, Void?>() {
-        var file_parsed = ArrayList<Files>()
-        override fun onPostExecute(result: Void?) {
-            val FileAdapter = ArrayList<Files>()
-            val myAdapter = FileAdapter(FileAdapter)
-            recycleView.adapter = myAdapter
-            FileAdapter.addAll(file_parsed) // Add parsed's values to Real array list
-            loadingProgress.visibility = View.GONE
-            super.onPostExecute(result)
-        }
-
-        override fun onPreExecute() {
-            loadingProgress.visibility = View.VISIBLE
-            super.onPreExecute()
-        }
-
-        override fun doInBackground(vararg params: String): Void? {
+    private fun getFile() {
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                loadingProgress.visibility = View.VISIBLE
+            }
             try {
                 val doc = Jsoup.connect(parse_url).get()
                 val root = doc.select("#bbsWrap > div.bbsContent > table > tbody") // Get root view
@@ -163,7 +135,10 @@ class NoticeReadActivity : AppCompatActivity() {
                 for (i in 6..count_dl) { // loop
                     val dl = root.select("tr:nth-child($i) > td > a") // Get dl url
                     val dl_href = dl.attr("abs:href") // Parse REAL url(href)
-                    publishProgress(dl.text(), dl_href) // Send it!
+                    withContext(Main) {
+                        fileArray.add(Files(dl.text(), dl_href))
+                        myAdapter.notifyDataSetChanged()
+                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -171,12 +146,9 @@ class NoticeReadActivity : AppCompatActivity() {
                 e.printStackTrace()
                 Log.e("Parse", e.toString())
             }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg params: String) { // Receive from doInBackground
-            file_parsed.add(Files(params[0], params[1]))
-            Log.d("Parse_dl", params[0])
+            withContext(Main) {
+                loadingProgress.visibility = View.GONE
+            }
         }
     }
 }
