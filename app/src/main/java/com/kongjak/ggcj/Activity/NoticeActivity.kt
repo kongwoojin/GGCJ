@@ -49,7 +49,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         setContentView(R.layout.activity_notice)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        parse_url = intent.getStringExtra("url")
+        if (intent.hasExtra("url")) parse_url = intent.getStringExtra("url" ).toString()
         notice_type = intent.getIntExtra("type", 0)
         Log.d("URL", String.format(parse_url, page))
         prev = findViewById<View>(R.id.prev) as FloatingActionButton

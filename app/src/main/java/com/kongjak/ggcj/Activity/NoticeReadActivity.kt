@@ -74,7 +74,7 @@ class NoticeReadActivity : AppCompatActivity() {
 
     private inner class MainPageTask : AsyncTask<String, String, Void?>() {
         private var count = 0
-        private var contentsValue: String? = null
+        private var contentsValue: String = ""
         override fun onPostExecute(result: Void?) {
             val title = findViewById<View>(R.id.item_title) as TextView
             val writer = findViewById<View>(R.id.item_writer) as TextView
@@ -112,7 +112,7 @@ class NoticeReadActivity : AppCompatActivity() {
                 val tables = root.select("tr:nth-child(5) > td > table")
                 count = contentsroot.size // Count!
                 Log.d("Parse", count.toString())
-                for (i in 1..count) { // loop
+                for (i in 1..count) { // Get contents line by line
                     val contents = root.select("tr:nth-child(5) > td > p:nth-child($i)") // Get contents
                     contentsValue = if (TextUtils.isEmpty(contentsValue)) contents.text() else "$contentsValue \n ${contents.text()}"
                     Log.d("GGCJ", contentsValue)
