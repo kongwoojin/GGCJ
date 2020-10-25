@@ -36,7 +36,7 @@ import java.util.*
 
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
     private lateinit var myAdapter: GalleryAdapter
-    private lateinit var GalleryArrayList: ArrayList<Gallery>
+    private lateinit var galleryArrayList: ArrayList<Gallery>
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var page = 1
     var last_page = 0
@@ -116,8 +116,8 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 }
             }
         })
-        GalleryArrayList = ArrayList<Gallery>()
-        myAdapter = GalleryAdapter(GalleryArrayList)
+        galleryArrayList = ArrayList<Gallery>()
+        myAdapter = GalleryAdapter(galleryArrayList)
         recycleView.adapter = myAdapter
         mSwipeRefreshLayout = findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         mSwipeRefreshLayout!!.setOnRefreshListener(this)
@@ -228,7 +228,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val notice_url = String.format(parse_url!!, page)
         CoroutineScope(IO).launch {
             withContext(Main) {
-                GalleryArrayList.clear()
+                galleryArrayList.clear()
                 loadingProgress.visibility = View.VISIBLE
             }
             try {
@@ -250,7 +250,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     Log.d("Parse", "http://ggcj.hs.kr/main.php" + imageUrl.attr("src"))
                     Log.d("Parse", url.attr("abs:href"))
                     withContext(Main) {
-                        GalleryArrayList.add(Gallery(title.text(), url.attr("abs:href"), full_image_url))
+                        galleryArrayList.add(Gallery(title.text(), url.attr("abs:href"), full_image_url))
                         myAdapter.notifyDataSetChanged()
                     }
                 }

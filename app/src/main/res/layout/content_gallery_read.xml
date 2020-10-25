@@ -12,22 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
+            <LinearLayout
                 android:id="@+id/rootView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    xmlns:tools="http://schemas.android.com/tools"
+                <androidx.cardview.widget.CardView
                     android:id="@+id/title_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,9 +55,7 @@
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    xmlns:tools="http://schemas.android.com/tools"
+                <androidx.cardview.widget.CardView
                     android:id="@+id/writer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,9 +87,7 @@
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    xmlns:tools="http://schemas.android.com/tools"
+                <androidx.cardview.widget.CardView
                     android:id="@+id/date_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,9 +119,7 @@
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    xmlns:tools="http://schemas.android.com/tools"
+                <androidx.cardview.widget.CardView
                     android:id="@+id/contents_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

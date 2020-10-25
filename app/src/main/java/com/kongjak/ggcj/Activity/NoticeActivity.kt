@@ -36,7 +36,7 @@ import java.util.*
 
 class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
     private lateinit var myAdapter: NoticeAdapter
-    private lateinit var NoticeArrayList: ArrayList<Notices>
+    private lateinit var noticeArrayList: ArrayList<Notices>
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     var page = 1
@@ -126,8 +126,8 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 }
             }
         })
-        NoticeArrayList = ArrayList<Notices>()
-        myAdapter = NoticeAdapter(NoticeArrayList)
+        noticeArrayList = ArrayList<Notices>()
+        myAdapter = NoticeAdapter(noticeArrayList)
         recycleView.adapter = myAdapter
         mSwipeRefreshLayout = findViewById<View>(R.id.swipe_layout) as SwipeRefreshLayout
         mSwipeRefreshLayout!!.setOnRefreshListener(this)
@@ -249,7 +249,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val notice_url = String.format(parse_url, page)
         CoroutineScope(IO).launch {
             withContext(Main) {
-                NoticeArrayList.clear()
+                noticeArrayList.clear()
                 loadingProgress.visibility = View.VISIBLE
             }
             try {
@@ -274,7 +274,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                         if (numoflist.text() == "공지") {
                             isImportant = true
                         }
-                        NoticeArrayList.add(Notices(title.text(), writer.text(), date.text(), notice_href, isImportant))
+                        noticeArrayList.add(Notices(title.text(), writer.text(), date.text(), notice_href, isImportant))
                         myAdapter.notifyDataSetChanged()
                     }
                     Log.d("Parse", title.text())

@@ -8,7 +8,7 @@
     tools:context=".Activity.InfoActivity"
     tools:showIn="@layout/activity_info">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <fragment
         android:id="@+id/settings_fragment"
         android:name="com.kongjak.ggcj.Activity.InfoPreference"
         android:layout_width="match_parent"
