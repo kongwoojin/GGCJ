@@ -87,13 +87,12 @@ class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(this, Uri.parse(url))
         } else if (id == R.id.nav_send) {
-            val email = Intent(Intent.ACTION_SENDTO)
-            email.data = Uri.parse("mailto:")
-            val address = arrayOf("ggcj@kongjak.com")
-            email.putExtra(Intent.EXTRA_EMAIL, address)
-            val title = resources.getString(R.string.nav_send_intent)
-            val chooser = Intent.createChooser(email, title)
-            if (email.resolveActivity(packageManager) != null) {
+            val email = Intent(Intent.ACTION_SEND).apply {
+                type = "message/rfc822"
+                putExtra(Intent.EXTRA_EMAIL, arrayOf("ggcj@kongjak.com"))
+            }
+            val chooser = Intent.createChooser(email, resources.getString(R.string.nav_send_intent))
+            if (intent.resolveActivity(packageManager) != null) {
                 startActivity(chooser)
             }
         } else if (id == R.id.nav_info) {
