@@ -16,10 +16,14 @@
             android:id="@+id/nav_notice_parents"
             android:icon="@drawable/ic_menu_notice"
             android:title="@string/nav_notice_parents" />
+        <!--
+        Comment out because only logged in user can access board.
+        So, let's block Gallery Menu until they grant access permission.
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/nav_gallery" />
+            -->
         <item
             android:id="@+id/nav_date"
             android:icon="@drawable/ic_menu_calender"

@@ -78,9 +78,11 @@ class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.putExtra("url", getString(R.string.notice_parents_url))
             intent.putExtra("type", 1)
             startActivity(intent)
+            /**
         } else if (id == R.id.nav_gallery) {
             val intent = Intent(baseContext, GalleryActivity::class.java)
             startActivity(intent)
+        **/
         } else if (id == R.id.nav_timetable) {
             val url = "http://comci.kr/st"
             val builder = CustomTabsIntent.Builder()
