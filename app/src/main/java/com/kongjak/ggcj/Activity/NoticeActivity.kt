@@ -3,11 +3,13 @@ package com.kongjak.ggcj.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
@@ -18,16 +20,16 @@ import com.google.android.material.navigation.NavigationView
 import com.kongjak.ggcj.Fragment.NoticeFragment
 import com.kongjak.ggcj.R
 
-
-class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, NoticeFragment.OnNoticePageChangeListener {
+class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    NoticeFragment.OnNoticePageChangeListener {
 
     lateinit var parseUrl: String // Notice List page url, Pass to Fragment
     private var fragmentManager: FragmentManager? = null
     lateinit var nowParseUrl: String // Open this link when user click action_web menu
-
+    val fragment: Fragment = NoticeFragment() // Fragment 생성
 
     override fun onNoticePageListChange(nowPage: Int) {
-        nowParseUrl = String.format(parseUrl, nowPage)
+        nowParseUrl = String.format(parseUrl, nowPage, "")
     }
 
     override fun onNoticePageChange(nowUrl: String) {
@@ -50,29 +52,29 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         setSupportActionBar(toolbar)
         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
         val toggle = ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
         setNav()
 
-
         fragmentManager = supportFragmentManager;
 
-        val fragment: Fragment = NoticeFragment() // Fragment 생성
 
         val bundle = Bundle().apply {
             putString("url", parseUrl)
             putInt("type", notice_type)
+            putString("searchValue", "")
         }
 
         fragment.arguments = bundle
 
         if (savedInstanceState == null) {
             fragmentManager!!.beginTransaction()
-                    .add(R.id.container, fragment)
-                    .commit()
+                .add(R.id.container, fragment)
+                .commit()
         }
     }
 
@@ -113,14 +115,19 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         } else if (id == R.id.nav_date) {
             val intent = Intent(baseContext, DateActivity::class.java)
             startActivity(intent)
-        } else if (id == R.id.nav_gallery) {
+            /**
+             * Comment out because only logged in user can access board.
+             * So, let's block Gallery Menu until they grant access permission.
+             *
+            } else if (id == R.id.nav_gallery) {
             val intent = Intent(baseContext, GalleryActivity::class.java)
             startActivity(intent)
+             **/
         } else if (id == R.id.nav_timetable) {
             val url = "http://comci.kr/st"
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(this@NoticeActivity, Uri.parse(url))
+            customTabsIntent.launchUrl(this, Uri.parse(url))
         } else if (id == R.id.nav_send) {
             val email = Intent(Intent.ACTION_SEND).apply {
                 type = "message/rfc822"
@@ -142,6 +149,32 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.notice, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                Log.d("GGCJ", query)
+
+                val bundle = Bundle().apply {
+                    putString("url", parseUrl)
+                    putInt("type", notice_type)
+                    putString("searchValue", query)
+                }
+
+                fragment.arguments = bundle
+
+                fragmentManager!!.beginTransaction()
+                    .detach(fragment)
+                    .attach(fragment)
+                    .commit()
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
         return true
     }
 
@@ -155,6 +188,7 @@ class NoticeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(this, Uri.parse(nowParseUrl))
         }
+
         return super.onOptionsItemSelected(item)
     }
 

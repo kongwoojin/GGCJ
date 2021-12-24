@@ -150,9 +150,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (id == R.id.nav_date) {
             val intent = Intent(baseContext, DateActivity::class.java)
             startActivity(intent)
+            /**
+             * Comment out because only logged in user can access board.
+             * So, let's block Gallery Menu until they grant access permission.
+             *
         } else if (id == R.id.nav_gallery) {
             val intent = Intent(baseContext, GalleryActivity::class.java)
             startActivity(intent)
+             *
+            **/
         } else if (id == R.id.nav_timetable) {
             val url = "http://comci.kr/st"
             val builder = CustomTabsIntent.Builder()

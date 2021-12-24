@@ -27,6 +27,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
+import kotlin.math.ceil
 
 class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -39,6 +40,7 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     var prev: FloatingActionButton? = null
     var next: FloatingActionButton? = null
     var parse_url: String = ""
+    var searchValue: String = ""
     var notice_type = 0
 
     private var listener: OnNoticePageChangeListener? = null
@@ -54,8 +56,10 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         loadingProgress = rootView.findViewById(R.id.loadingProgress) as ProgressBar
 
         arguments?.let {
+            Log.d("GGCJ", "TST")
             parse_url = it.getString("url").toString()
             notice_type = it.getInt("type")
+            searchValue = it.getString("searchValue").toString()
         }
 
         if (savedInstanceState != null) {
@@ -130,11 +134,10 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         noticeArrayList = ArrayList<Notices>()
 
-
         myAdapter = NoticeAdapter(noticeArrayList) { Notices ->
             if (resources.getBoolean(R.bool.isTablet) && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
-                val fragment= NoticeReadFragment() // Fragment 생성
+                val fragment = NoticeReadFragment()
 
                 val fragmentManager = activity?.supportFragmentManager
 
@@ -181,11 +184,11 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun getList() {
-        //First, Send Now page to activity
+        // First, Send Now page to activity
         listener?.onNoticePageListChange(page)
         var count: Int
         Log.d("Page", page.toString())
-        val notice_url = String.format(parse_url, page)
+        val notice_url = String.format(parse_url, page, searchValue)
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) {
                 noticeArrayList.clear()
@@ -197,7 +200,8 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 val root = doc.select("#bbsWrap > form > div.bbsContent > table > tbody") // Get root view
                 val list = doc.select("#bbsWrap > form > div.bbsContent > table > tbody > tr") // Get notice list
                 val last_page_url = doc.select("#bbsWrap > form > div.bbsPage > li:nth-child(14) > a")
-                if (page == 1) last_page = last_page_url.attr("abs:href").replace("(.*)Page=".toRegex(), "").toInt()
+                Log.d("TST", page.toString())
+                //if (page == 1) last_page = last_page_url.attr("abs:href").replace("(.*)Page=".toRegex(), "").toInt()
                 count = list.size // Count notice!
                 Log.d("Parse", "GGCJ$last_page")
                 Log.d("Parse", "Count$count")
@@ -216,9 +220,14 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         noticeArrayList.add(Notices(title.text(), writer.text(), date.text(), notice_href, isImportant))
                         myAdapter.notifyDataSetChanged()
                     }
+                    if (page == 1 && !numoflist.text().equals("공지")) {
+                        var lastNoticeNum = numoflist.text().toDouble()
+                        last_page =
+                            ceil((lastNoticeNum + 14) / 15).toInt() // Get last page number
+                        Log.d("GGCJ", last_page.toString())
+                    }
                     Log.d("Parse", title.text())
                     Log.d("Parse", "Count: $i")
-                    Log.d("Parse", url.toString())
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -233,7 +242,7 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    private fun reload() {
+    fun reload() {
         getList()
         mSwipeRefreshLayout!!.isRefreshing = false
     }

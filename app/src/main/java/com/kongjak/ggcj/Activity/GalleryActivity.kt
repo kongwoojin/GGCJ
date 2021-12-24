@@ -92,7 +92,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         toggle.syncState()
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
-        navigationView.setCheckedItem(R.id.nav_gallery)
+        // navigationView.setCheckedItem(R.id.nav_gallery)
         recycleView.setHasFixedSize(true)
         val mLayoutManager = GridLayoutManager(this, calculateNoOfColumns(200F))
         recycleView.layoutManager = mLayoutManager
@@ -236,7 +236,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 val doc = Jsoup.connect(notice_url).get()
                 val root = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul") // Get root view
                 val list = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul > li") // Get notice list
-                val last_page_url = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsPage > a:nth-child(14)")
+                val last_page_url = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsPage > a:nth-child(9)")
                 if (page == 1) last_page = last_page_url.attr("abs:href").replace("(.*)Page=".toRegex(), "").toInt()
                 val count = list.size // Count notice!
                 Log.d("Parse", "GGCJ$last_page")
