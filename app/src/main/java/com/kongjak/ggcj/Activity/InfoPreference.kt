@@ -18,16 +18,51 @@ class InfoPreference : PreferenceFragment() {
         when (preference.key) {
             "allSource" -> {
                 val notices = Notices()
-                notices.addNotice(Notice("GGCJ", "https://github.com/kongwoojin/ggcj", "Copyright (c) 2019 WooJin Kong", MITLicense()))
-                notices.addNotice(Notice("jsoup", "https://jsoup.org", "Copyright © 2009 - 2020 Jonathan Hedley (jonathan@hedley.net)", MITLicense()))
-                notices.addNotice(Notice("Material Calendar View", "https://github.com/prolificinteractive/material-calendarview", "Copyright (c) 2018 Prolific Interactive", MITLicense()))
-                notices.addNotice(Notice("AppIntro library", "https://github.com/AppIntro/AppIntro", "Copyright 2015 Paolo Rotolo\nCopyright 2018 APL Devs", ApacheSoftwareLicense20()))
-                notices.addNotice(Notice("Glide", "https://github.com/bumptech/glide", "Copyright 2014 Google, Inc. All rights reserved.", BSD3ClauseLicense()))
+                notices.addNotice(
+                    Notice(
+                        "GGCJ",
+                        "https://github.com/kongwoojin/ggcj",
+                        "Copyright (c) 2019 WooJin Kong",
+                        MITLicense()
+                    )
+                )
+                notices.addNotice(
+                    Notice(
+                        "jsoup",
+                        "https://jsoup.org",
+                        "Copyright © 2009 - 2020 Jonathan Hedley (jonathan@hedley.net)",
+                        MITLicense()
+                    )
+                )
+                notices.addNotice(
+                    Notice(
+                        "Material Calendar View",
+                        "https://github.com/prolificinteractive/material-calendarview",
+                        "Copyright (c) 2018 Prolific Interactive",
+                        MITLicense()
+                    )
+                )
+                notices.addNotice(
+                    Notice(
+                        "AppIntro library",
+                        "https://github.com/AppIntro/AppIntro",
+                        "Copyright 2015 Paolo Rotolo\nCopyright 2018 APL Devs",
+                        ApacheSoftwareLicense20()
+                    )
+                )
+                notices.addNotice(
+                    Notice(
+                        "Glide",
+                        "https://github.com/bumptech/glide",
+                        "Copyright 2014 Google, Inc. All rights reserved.",
+                        BSD3ClauseLicense()
+                    )
+                )
                 LicensesDialog.Builder(activity)
-                        .setNotices(notices)
-                        .setIncludeOwnLicense(true)
-                        .build()
-                        .show()
+                    .setNotices(notices)
+                    .setIncludeOwnLicense(true)
+                    .build()
+                    .show()
             }
             "deleteData" -> {
                 val lunch_sp = preference.context.getSharedPreferences("lunch", MODE_PRIVATE)

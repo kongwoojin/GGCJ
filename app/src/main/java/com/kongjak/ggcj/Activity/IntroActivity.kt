@@ -13,9 +13,30 @@ class IntroActivity : AppIntro2() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        addSlide(AppIntroFragment.newInstance(getString(R.string.intro_1_title), getString(R.string.intro_1_desc), R.drawable.ggcj_intro_1, Color.parseColor("#5d4037")))
-        addSlide(AppIntroFragment.newInstance(getString(R.string.intro_2_title), getString(R.string.intro_2_desc), R.drawable.ggcj_intro_2, Color.parseColor("#5d4037")))
-        addSlide(AppIntroFragment.newInstance(getString(R.string.intro_3_title), getString(R.string.intro_3_desc), R.drawable.ggcj_intro_3, Color.parseColor("#5d4037")))
+        addSlide(
+            AppIntroFragment.newInstance(
+                getString(R.string.intro_1_title),
+                getString(R.string.intro_1_desc),
+                R.drawable.ggcj_intro_1,
+                Color.parseColor("#5d4037")
+            )
+        )
+        addSlide(
+            AppIntroFragment.newInstance(
+                getString(R.string.intro_2_title),
+                getString(R.string.intro_2_desc),
+                R.drawable.ggcj_intro_2,
+                Color.parseColor("#5d4037")
+            )
+        )
+        addSlide(
+            AppIntroFragment.newInstance(
+                getString(R.string.intro_3_title),
+                getString(R.string.intro_3_desc),
+                R.drawable.ggcj_intro_3,
+                Color.parseColor("#5d4037")
+            )
+        )
 
         setTransformer(AppIntroPageTransformerType.Parallax())
     }

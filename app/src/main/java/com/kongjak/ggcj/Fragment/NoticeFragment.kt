@@ -48,8 +48,10 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var recycleView: RecyclerView
     lateinit var loadingProgress: ProgressBar
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_notice, container, false)
 
         recycleView = rootView.findViewById(R.id.recycleView) as RecyclerView
@@ -148,8 +150,8 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 fragment.arguments = bundle
 
                 fragmentManager!!.beginTransaction()
-                        .replace(R.id.detailContainer, fragment)
-                        .commit()
+                    .replace(R.id.detailContainer, fragment)
+                    .commit()
 
                 listener?.onNoticePageChange(Notices.url)
 
@@ -197,9 +199,12 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             try {
                 Log.d("Parse", notice_url)
                 val doc = Jsoup.connect(notice_url).get()
-                val root = doc.select("#bbsWrap > form > div.bbsContent > table > tbody") // Get root view
-                val list = doc.select("#bbsWrap > form > div.bbsContent > table > tbody > tr") // Get notice list
-                val last_page_url = doc.select("#bbsWrap > form > div.bbsPage > li:nth-child(14) > a")
+                val root =
+                    doc.select("#bbsWrap > form > div.bbsContent > table > tbody") // Get root view
+                val list =
+                    doc.select("#bbsWrap > form > div.bbsContent > table > tbody > tr") // Get notice list
+                val last_page_url =
+                    doc.select("#bbsWrap > form > div.bbsPage > li:nth-child(14) > a")
                 Log.d("TST", page.toString())
                 //if (page == 1) last_page = last_page_url.attr("abs:href").replace("(.*)Page=".toRegex(), "").toInt()
                 count = list.size // Count notice!
@@ -207,7 +212,8 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 Log.d("Parse", "Count$count")
                 for (i in 1..count) { // loop
                     val title = root.select("tr:nth-child($i) > td.tit") // Get title
-                    val numoflist = root.select("tr:nth-child($i) > td:nth-child(1)") // Get number of notice
+                    val numoflist =
+                        root.select("tr:nth-child($i) > td:nth-child(1)") // Get number of notice
                     val writer = root.select("tr:nth-child($i) > td:nth-child(4)") // Get writer
                     val date = root.select("tr:nth-child($i) > td:nth-child(5)") // Get date
                     val url = root.select("tr:nth-child($i) > td.tit > a") // Get url (Elements)
@@ -217,7 +223,15 @@ class NoticeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         if (numoflist.text() == "공지") {
                             isImportant = true
                         }
-                        noticeArrayList.add(Notices(title.text(), writer.text(), date.text(), notice_href, isImportant))
+                        noticeArrayList.add(
+                            Notices(
+                                title.text(),
+                                writer.text(),
+                                date.text(),
+                                notice_href,
+                                isImportant
+                            )
+                        )
                         myAdapter.notifyDataSetChanged()
                     }
                     if (page == 1 && !numoflist.text().equals("공지")) {

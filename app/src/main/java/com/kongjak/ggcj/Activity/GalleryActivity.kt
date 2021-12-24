@@ -34,7 +34,8 @@ import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
 
-class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnRefreshListener {
+class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    OnRefreshListener {
     private lateinit var myAdapter: GalleryAdapter
     private lateinit var galleryArrayList: ArrayList<Gallery>
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
@@ -87,7 +88,8 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
         val toggle = ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
@@ -234,10 +236,14 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             try {
                 Log.d("Parse", notice_url)
                 val doc = Jsoup.connect(notice_url).get()
-                val root = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul") // Get root view
-                val list = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul > li") // Get notice list
-                val last_page_url = doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsPage > a:nth-child(9)")
-                if (page == 1) last_page = last_page_url.attr("abs:href").replace("(.*)Page=".toRegex(), "").toInt()
+                val root =
+                    doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul") // Get root view
+                val list =
+                    doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsContent.mt10.clearfix > ul > li") // Get notice list
+                val last_page_url =
+                    doc.select("#container > div > div.content.col-md-9 > div.contentBody > div.bbsWrap > form > div.bbsPage > a:nth-child(9)")
+                if (page == 1) last_page =
+                    last_page_url.attr("abs:href").replace("(.*)Page=".toRegex(), "").toInt()
                 val count = list.size // Count notice!
                 Log.d("Parse", "GGCJ$last_page")
                 Log.d("Parse", "Count$count")
@@ -250,7 +256,13 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     Log.d("Parse", "http://ggcj.hs.kr/main.php" + imageUrl.attr("src"))
                     Log.d("Parse", url.attr("abs:href"))
                     withContext(Main) {
-                        galleryArrayList.add(Gallery(title.text(), url.attr("abs:href"), full_image_url))
+                        galleryArrayList.add(
+                            Gallery(
+                                title.text(),
+                                url.attr("abs:href"),
+                                full_image_url
+                            )
+                        )
                         myAdapter.notifyDataSetChanged()
                     }
                 }

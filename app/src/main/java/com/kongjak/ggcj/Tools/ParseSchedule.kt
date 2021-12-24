@@ -27,13 +27,19 @@ class ParseSchedule {
                 val date = year + month
                 val builder = Uri.Builder()
                 builder.scheme("https")
-                        .authority("open.neis.go.kr")
-                        .appendPath("hub")
-                        .appendPath("SchoolSchedule")
-                        .appendQueryParameter("KEY", context.getString(R.string.api_key))
-                        .appendQueryParameter("ATPT_OFCDC_SC_CODE", context.getString(R.string.api_region_code))
-                        .appendQueryParameter("SD_SCHUL_CODE", context.getString(R.string.api_school_code))
-                        .appendQueryParameter("AA_YMD", date)
+                    .authority("open.neis.go.kr")
+                    .appendPath("hub")
+                    .appendPath("SchoolSchedule")
+                    .appendQueryParameter("KEY", context.getString(R.string.api_key))
+                    .appendQueryParameter(
+                        "ATPT_OFCDC_SC_CODE",
+                        context.getString(R.string.api_region_code)
+                    )
+                    .appendQueryParameter(
+                        "SD_SCHUL_CODE",
+                        context.getString(R.string.api_school_code)
+                    )
+                    .appendQueryParameter("AA_YMD", date)
                 val schedule_url = builder.build().toString()
                 val doc = Jsoup.connect(schedule_url).get()
                 var isClassExits = false
@@ -65,7 +71,8 @@ class ParseSchedule {
                             val day_parsed = date_parsed.substring(6, 8)
                             val date_pref1 = "$year_parsed-$month_parsed-$day_parsed"
                             schedule = schedule.replace("<br/>", "\n")
-                            val schedule_sp = context.getSharedPreferences("schedule", Context.MODE_PRIVATE)
+                            val schedule_sp =
+                                context.getSharedPreferences("schedule", Context.MODE_PRIVATE)
                             val schedule_editor = schedule_sp.edit()
                             schedule_editor.putString(date_pref1, schedule)
                             schedule_editor.apply()

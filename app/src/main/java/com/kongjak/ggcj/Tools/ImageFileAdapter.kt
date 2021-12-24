@@ -14,18 +14,21 @@ import com.bumptech.glide.request.RequestOptions
 import com.kongjak.ggcj.R
 import java.util.*
 
-class ImageFileAdapter(private val ImageFileArrayList: ArrayList<ImageFiles>) : RecyclerView.Adapter<ImageFileAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.image_file_item, parent, false))
+class ImageFileAdapter(private val ImageFileArrayList: ArrayList<ImageFiles>) :
+    RecyclerView.Adapter<ImageFileAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.image_file_item, parent, false)
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = ImageFileArrayList[position]
         if (data.imageAvailable) {
             holder.file.visibility = View.GONE
             Glide.with(holder.mCardView)
-                    .load(data.url)
-                    .placeholder(R.drawable.ic_thumbnail)
-                    .apply(RequestOptions().override(1000, 1000))
-                    .into(holder.image)
+                .load(data.url)
+                .placeholder(R.drawable.ic_thumbnail)
+                .apply(RequestOptions().override(1000, 1000))
+                .into(holder.image)
         } else {
             holder.image.visibility = View.GONE
             holder.file.text = ImageFileArrayList[position].title

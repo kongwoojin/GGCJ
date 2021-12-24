@@ -47,7 +47,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            this,
+            drawer_layout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
@@ -154,11 +159,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
              * Comment out because only logged in user can access board.
              * So, let's block Gallery Menu until they grant access permission.
              *
-        } else if (id == R.id.nav_gallery) {
+            } else if (id == R.id.nav_gallery) {
             val intent = Intent(baseContext, GalleryActivity::class.java)
             startActivity(intent)
              *
-            **/
+             **/
         } else if (id == R.id.nav_timetable) {
             val url = "http://comci.kr/st"
             val builder = CustomTabsIntent.Builder()
@@ -253,7 +258,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     if (nextSchedule == null || nextSchedule.isEmpty()) {
                         item_schedule.text = getString(R.string.no_next_schedule)
                     } else {
-                        item_schedule.text = String.format(getString(R.string.next_schedule), nextSchedule, nextScheduleDay)
+                        item_schedule.text = String.format(
+                            getString(R.string.next_schedule),
+                            nextSchedule,
+                            nextScheduleDay
+                        )
                     }
                 }
             }.start()

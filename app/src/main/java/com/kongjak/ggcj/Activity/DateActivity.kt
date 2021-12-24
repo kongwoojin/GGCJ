@@ -21,22 +21,28 @@ import kotlinx.android.synthetic.main.app_bar_date.*
 import kotlinx.android.synthetic.main.content_date.*
 import org.threeten.bp.format.DateTimeFormatter
 
-class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnDateSelectedListener {
+class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    OnDateSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_date)
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            this,
+            drawer_layout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.setCheckedItem(R.id.nav_date)
         calendarView.setOnDateChangedListener(this)
         calendarView.addDecorators(
-                SundayDecorator(),
-                SaturdayDecorator(),
-                TodayDecorator()
+            SundayDecorator(),
+            SaturdayDecorator(),
+            TodayDecorator()
         )
 
         calendarView.setLeftArrow(R.drawable.ic_date_left_black)
@@ -44,9 +50,10 @@ class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onDateSelected(
-            widget: MaterialCalendarView,
-            date: CalendarDay,
-            selected: Boolean) {
+        widget: MaterialCalendarView,
+        date: CalendarDay,
+        selected: Boolean
+    ) {
         val intent = Intent(baseContext, DateReadActivity::class.java)
         intent.putExtra("dayOfMonth", if (selected) DAY_FORMATTER.format(date.date) else "0")
         intent.putExtra("month", if (selected) MONTH_FORMATTER.format(date.date) else "0")
@@ -79,10 +86,10 @@ class DateActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.putExtra("type", 1)
             startActivity(intent)
             /**
-        } else if (id == R.id.nav_gallery) {
+            } else if (id == R.id.nav_gallery) {
             val intent = Intent(baseContext, GalleryActivity::class.java)
             startActivity(intent)
-        **/
+             **/
         } else if (id == R.id.nav_timetable) {
             val url = "http://comci.kr/st"
             val builder = CustomTabsIntent.Builder()

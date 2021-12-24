@@ -36,14 +36,20 @@ class ParseMeal {
                 val date = year + month
                 val builder = Uri.Builder()
                 builder.scheme("https")
-                        .authority("open.neis.go.kr")
-                        .appendPath("hub")
-                        .appendPath("mealServiceDietInfo")
-                        .appendQueryParameter("KEY", context.getString(R.string.api_key))
-                        .appendQueryParameter("ATPT_OFCDC_SC_CODE", context.getString(R.string.api_region_code))
-                        .appendQueryParameter("SD_SCHUL_CODE", context.getString(R.string.api_school_code))
-                        .appendQueryParameter("MMEAL_SC_CODE", params[0])
-                        .appendQueryParameter("MLSV_YMD", date)
+                    .authority("open.neis.go.kr")
+                    .appendPath("hub")
+                    .appendPath("mealServiceDietInfo")
+                    .appendQueryParameter("KEY", context.getString(R.string.api_key))
+                    .appendQueryParameter(
+                        "ATPT_OFCDC_SC_CODE",
+                        context.getString(R.string.api_region_code)
+                    )
+                    .appendQueryParameter(
+                        "SD_SCHUL_CODE",
+                        context.getString(R.string.api_school_code)
+                    )
+                    .appendQueryParameter("MMEAL_SC_CODE", params[0])
+                    .appendQueryParameter("MLSV_YMD", date)
                 val meal_url = builder.build().toString()
                 val doc = Jsoup.connect(meal_url).get()
                 var isClassExits = false

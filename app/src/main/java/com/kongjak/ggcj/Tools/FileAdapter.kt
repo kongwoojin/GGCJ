@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kongjak.ggcj.R
 import java.util.*
 
-class FileAdapter(private val FileArrayList: ArrayList<Files>) : RecyclerView.Adapter<FileAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.file_item, parent, false))
+class FileAdapter(private val FileArrayList: ArrayList<Files>) :
+    RecyclerView.Adapter<FileAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.file_item, parent, false))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = FileArrayList[position]

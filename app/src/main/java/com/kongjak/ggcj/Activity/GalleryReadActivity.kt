@@ -84,22 +84,28 @@ class GalleryReadActivity : AppCompatActivity() {
             try {
                 val doc = Jsoup.connect(parse_url).get()
                 val root = doc.select("#bbsWrap > div.bbsContent > table > tbody") // Get root view
-                val title = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(1) > td") // Get title
-                val writer = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(2) > td") // Get writer
-                val date = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(4) > td") // Get date
+                val title =
+                    doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(1) > td") // Get title
+                val writer =
+                    doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(2) > td") // Get writer
+                val date =
+                    doc.select("#bbsWrap > div.bbsContent > table > tbody > tr:nth-child(4) > td") // Get date
                 val contentsroot = root.select("tr:nth-child(5) > td > p") // Get contents root
                 val tables = root.select("tr:nth-child(5) > td > table")
                 count = contentsroot.size // Count!
                 Log.d("Parse", count.toString())
                 for (i in 1..count) { // loop
-                    val contents = root.select("tr:nth-child(5) > td > p:nth-child($i)") // Get contents
-                    contentsValue = if (TextUtils.isEmpty(contentsValue)) contents.text() else "$contentsValue \n ${contents.text()}"
+                    val contents =
+                        root.select("tr:nth-child(5) > td > p:nth-child($i)") // Get contents
+                    contentsValue =
+                        if (TextUtils.isEmpty(contentsValue)) contents.text() else "$contentsValue \n ${contents.text()}"
                 }
                 withContext(Main) {
                     item_title.text = title.text()
                     item_writer.text = writer.text()
                     item_date.text = date.text()
-                    if (TextUtils.isEmpty(contentsValue)) item_contents.text = "내용이 없습니다." else item_contents.text = contentsValue
+                    if (TextUtils.isEmpty(contentsValue)) item_contents.text =
+                        "내용이 없습니다." else item_contents.text = contentsValue
                     loadingProgress.visibility = View.GONE
                     if (tables.size.toString() != "0") {
                         val builder = AlertDialog.Builder(this@GalleryReadActivity)
@@ -131,7 +137,8 @@ class GalleryReadActivity : AppCompatActivity() {
             try {
                 val doc = Jsoup.connect(parse_url).get()
                 val root = doc.select("#bbsWrap > div.bbsContent > table > tbody") // Get root view
-                val dl_root = doc.select("#bbsWrap > div.bbsContent > table > tbody > tr") // Get root view
+                val dl_root =
+                    doc.select("#bbsWrap > div.bbsContent > table > tbody > tr") // Get root view
                 val count_dl = dl_root.size // Count!
                 Log.d("Parse", "cnt_dl$count_dl")
                 for (i in 6..count_dl) { // loop

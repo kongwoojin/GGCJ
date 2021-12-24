@@ -12,18 +12,21 @@ import com.kongjak.ggcj.Activity.GalleryReadActivity
 import com.kongjak.ggcj.R
 import java.util.*
 
-class GalleryAdapter(private val GalleryArrayList: ArrayList<Gallery>) : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.gallery_item, parent, false))
+class GalleryAdapter(private val GalleryArrayList: ArrayList<Gallery>) :
+    RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.gallery_item, parent, false)
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = GalleryArrayList[position]
         Glide.with(holder.rootView)
-                .load(data.imageUrl.replace("&source=thumbnail", ""))
-                .placeholder(R.drawable.ic_thumbnail)
-                .centerCrop()
-                .thumbnail(0.1f)
-                .error(R.drawable.ic_image_error)
-                .into(holder.thumbnail)
+            .load(data.imageUrl.replace("&source=thumbnail", ""))
+            .placeholder(R.drawable.ic_thumbnail)
+            .centerCrop()
+            .thumbnail(0.1f)
+            .error(R.drawable.ic_image_error)
+            .into(holder.thumbnail)
 
         holder.rootView.setOnClickListener {
             val intent = Intent(it.context, GalleryReadActivity::class.java)

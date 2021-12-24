@@ -11,9 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.kongjak.ggcj.Fragment.NoticeReadFragment
 import com.kongjak.ggcj.R
-import com.kongjak.ggcj.Tools.FileAdapter
-import com.kongjak.ggcj.Tools.Files
-import java.util.*
 
 class NoticeReadActivity : AppCompatActivity() {
     private var fragmentManager: FragmentManager? = null
@@ -39,8 +36,8 @@ class NoticeReadActivity : AppCompatActivity() {
         fragment.arguments = bundle
 
         fragmentManager!!.beginTransaction()
-                .add(R.id.container, fragment)
-                .commit()
+            .add(R.id.container, fragment)
+            .commit()
 
     }
 
