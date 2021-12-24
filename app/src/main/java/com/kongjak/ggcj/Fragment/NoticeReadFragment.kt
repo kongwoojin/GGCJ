@@ -125,7 +125,7 @@ class NoticeReadFragment : Fragment() {
                 val count_dl = dl_root.size // Count!
                 Log.d("Parse", "cnt_dl$count_dl")
                 for (i in 6..count_dl) { // loop
-                    val dl = root.select("tr:nth-child($i) > td > a") // Get dl url
+                    val dl = root.select("tr:nth-child($i) > td > a:nth-child(1)") // Get dl url
                     val dl_href = dl.attr("abs:href") // Parse REAL url(href)
                     withContext(Dispatchers.Main) {
                         fileArray.add(Files(dl.text(), dl_href))
