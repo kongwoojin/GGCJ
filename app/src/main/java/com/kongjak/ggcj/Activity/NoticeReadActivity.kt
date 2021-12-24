@@ -9,7 +9,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.kongjak.ggcj.Fragment.NoticeFragment
 import com.kongjak.ggcj.Fragment.NoticeReadFragment
 import com.kongjak.ggcj.R
 import com.kongjak.ggcj.Tools.FileAdapter
@@ -47,7 +46,7 @@ class NoticeReadActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.notice, menu)
+        menuInflater.inflate(R.menu.notice_read, menu)
         return true
     }
 
