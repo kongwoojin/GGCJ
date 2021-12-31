@@ -204,7 +204,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             val intent = Intent(baseContext, DateActivity::class.java)
             startActivity(intent)
         } else if (id == R.id.nav_timetable) {
-            val url = "http://comci.kr/st"
+            val url = resources.getString(R.string.menu_timetable_url)
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(this@GalleryActivity, Uri.parse(url))

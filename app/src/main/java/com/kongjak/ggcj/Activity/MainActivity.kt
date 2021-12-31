@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
              *
              **/
         } else if (id == R.id.nav_timetable) {
-            val url = "http://comci.kr/st"
+            val url = resources.getString(R.string.menu_timetable_url)
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(this, Uri.parse(url))

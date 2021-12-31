@@ -25,6 +25,7 @@
     <string name="nav_info">Info</string>
     <string name="menu_school_website">School Website</string>
     <string name="menu_notice_website">View at Website</string>
+    <string name="menu_timetable_url" translatable="false">http://xn--s39aj90b0nb2xw6xh.kr/</string>
 
     <!-- Meal & Schedule -->
     <string name="meal">Meal</string>
